@@ -1,0 +1,17 @@
+class World {
+  character = new Character();
+  enemies = [
+    new Chicken(),
+    new Boss()
+  ];
+
+  draw() {
+    this.ctx.drawImage(this.character.img, this.character.x, this.character.y, this.character.width, this.character.height);
+    let self = this;
+    requestAnimationFrame(() => self.draw());
+  }
+  constructor(canvas) {
+    this.ctx = canvas.getContext('2d');
+    this.draw();
+  }
+}

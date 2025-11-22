@@ -5,6 +5,7 @@ class World {
   ctx;
   keyboard;
   camera_x = 0;
+  statusBar = new StatusBar();
 
   constructor(canvas, keyboard) {
       this.ctx = canvas.getContext('2d');
@@ -12,7 +13,7 @@ class World {
       this.keyboard = keyboard;
       this.draw();
       this.setWorld();
-      this.draw();
+      this.checkCollisions();
     }
   
 
@@ -21,6 +22,12 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
+
+    this.ctx.translate(-this.camera_x, 0);
+    // --------- Space for fixed objects -----------
+    this.addToMap(this.statusBar);
+    this.ctx.translate(this.camera_x, 0);
+
     
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
@@ -33,7 +40,22 @@ class World {
   setWorld() {
     this.character.world = this;
   }
-  
+
+  checkCollisions() {
+    setInterval(() => {
+      // make sure collision frames are up-to-date before checking
+      this.character.getReaLFrame();
+      this.level.enemies.forEach((enemy) => {
+        enemy.getReaLFrame();
+        if (this.character.isColliding(enemy)) {
+          
+          this.character.hit();
+          this.statusBar.setPercentage(this.character.energy);
+          console.log('Collision with enemy detected!', this.character.energy);
+        }
+      });
+    }, 200);
+  }
 
   addObjectsToMap(objects){
     objects.forEach(object => {
@@ -43,23 +65,25 @@ class World {
 
   addToMap(movableImage) {
     if (movableImage.otherDirection) {
-      this.ctx.save();
-      this.ctx.translate(movableImage.x + movableImage.width / 2, 0);
-      this.ctx.scale(-1, 1);
-      this.ctx.translate(-(movableImage.x + movableImage.width / 2), 0);
+      this.flipImage(movableImage);
     }
 
-    this.ctx.drawImage(movableImage.img, movableImage.x, movableImage.y, movableImage.width, movableImage.height);
-    /*
-    KASTEN ANZEIGEN LASSEN WEITER MACHEN!!! 08.refactoring
-    this.ctx.beginPath();
-    this.ctx.rect(movableImage.x, movableImage.y, movableImage.width, movableImage.height);
-    this.ctx.strokeStyle = 'red';
-    this.ctx.stroke();
-    */
+    movableImage.draw(this.ctx);
+    movableImage.drawFrame(this.ctx);
 
     if (movableImage.otherDirection) {
-      this.ctx.restore();
+      this.flipImageBack(movableImage);
     }
+  }
+
+  flipImage(movableImage) {
+    this.ctx.save();
+    this.ctx.translate(movableImage.x + movableImage.width / 2, 0);
+    this.ctx.scale(-1, 1);
+    this.ctx.translate(-(movableImage.x + movableImage.width / 2), 0);
+  }
+
+  flipImageBack(movableImage) {
+    this.ctx.restore();
   }
 } 

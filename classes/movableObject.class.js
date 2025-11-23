@@ -8,19 +8,20 @@ class MovableObject extends DrawableObject{
   lastHit = 0;
 
   applyGravity(){
-    const groundY = 226;
     setInterval(() => {
-      this.speedY -= this.acceleration;
-      this.y -= this.speedY;
-      if (this.y > groundY) {
-        this.y = groundY;
-        this.speedY = 0;
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
       }
     }, 1000 / 60);
   }
 
   isAboveGround(){
-    return this.y < 226;
+    if(this instanceof ThrowableObject){
+      return true;
+    } else {
+      return this.y < 226;      
+    }
   }
 
   getReaLFrame(){

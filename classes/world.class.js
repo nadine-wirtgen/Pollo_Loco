@@ -6,6 +6,7 @@ class World {
   keyboard;
   camera_x = 0;
   statusBar = new StatusBar();
+  throwableObjects = [];
 
   constructor(canvas, keyboard) {
       this.ctx = canvas.getContext('2d');
@@ -13,7 +14,7 @@ class World {
       this.keyboard = keyboard;
       this.draw();
       this.setWorld();
-      this.checkCollisions();
+      this.run();
     }
   
 
@@ -31,6 +32,7 @@ class World {
     
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
     let self = this;
     requestAnimationFrame(() => self.draw());
@@ -41,20 +43,30 @@ class World {
     this.character.world = this;
   }
 
-  checkCollisions() {
+  run() {
     setInterval(() => {
-      // make sure collision frames are up-to-date before checking
-      this.character.getReaLFrame();
-      this.level.enemies.forEach((enemy) => {
-        enemy.getReaLFrame();
-        if (this.character.isColliding(enemy)) {
-          
-          this.character.hit();
-          this.statusBar.setPercentage(this.character.energy);
-          console.log('Collision with enemy detected!', this.character.energy);
-        }
-      });
-    }, 200);
+      this.checkCollisions();
+      this.checkThrowObjects();
+    }, 20);
+  }
+
+  checkThrowObjects(){
+    if(this.keyboard.D){
+      let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+      this.throwableObjects.push(bottle);
+    }
+  }
+
+  checkCollisions(){
+    this.character.getReaLFrame();
+    this.level.enemies.forEach((enemy) => {
+      enemy.getReaLFrame();
+      if (this.character.isColliding(enemy)) {
+        this.character.hit();
+        this.statusBar.setPercentage(this.character.energy);
+        console.log('Collision with enemy detected!', this.character.energy);
+      }
+    });
   }
 
   addObjectsToMap(objects){

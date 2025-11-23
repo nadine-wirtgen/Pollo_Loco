@@ -31,7 +31,9 @@ window.addEventListener("keydown", (e) => {
     keyboard.SPACE = true;
   }
 
-
+  if (e.key === "d" || e.key === "D") {
+    keyboard.D = true;
+  }
 
 
   console.log(e);
@@ -61,7 +63,9 @@ window.addEventListener("keyup", (e) => {
     keyboard.SPACE = false;
   }
 
-
+  if (e.key === "d" || e.key === "D") {
+    keyboard.D = false;
+  }
 
 
   console.log(e);

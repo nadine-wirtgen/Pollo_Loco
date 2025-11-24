@@ -42,6 +42,7 @@ class Character extends MovableObject {
   ];
   currentImageIndex = 0;
   world;
+  deadAnimationFinished = false;
   offset = {
     top: 100,
     bottom: 10,
@@ -62,6 +63,8 @@ class Character extends MovableObject {
 
   animate(){
     setInterval(() => {
+      if (this.isDead()) return; // prevent movement when dead
+      
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         this.otherDirection = false;
@@ -89,7 +92,15 @@ class Character extends MovableObject {
 
     setInterval(() => {
       if(this.isDead()){
-        this.playAnimation(this.IMAGES_DEAD);
+        if (!this.deadAnimationFinished) {
+          if (this.currentImageIndex < this.IMAGES_DEAD.length) {
+            this.playAnimation(this.IMAGES_DEAD);
+          } else {
+            this.deadAnimationFinished = true;
+            // stay on last frame
+            this.img = this.imageCache[this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1]];
+          }
+        }
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAboveGround()){

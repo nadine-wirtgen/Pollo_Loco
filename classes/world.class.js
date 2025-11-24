@@ -32,10 +32,8 @@ class World {
     this.addToMap(this.bottleBar);
     this.addToMap(this.coinsBar);
     this.ctx.translate(this.camera_x, 0);
-
-    
-    this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
+    this.addToMap(this.character);
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
     let self = this;
@@ -51,12 +49,14 @@ class World {
     setInterval(() => {
       this.checkCollisions();
       this.checkThrowObjects();
+      this.checkBottleCollisions();
     }, 80);
   }
 
   checkThrowObjects(){
-    if(this.keyboard.D){
-      let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+    if(this.keyboard.D && !this.character.isDead()){
+      let offsetX = this.character.otherDirection ? -30 : 60;
+      let bottle = new ThrowableObject(this.character.x + offsetX, this.character.y + 50);
       bottle.otherDirection = this.character.otherDirection;
       this.throwableObjects.push(bottle);
     }
@@ -66,11 +66,24 @@ class World {
     this.character.getReaLFrame();
     this.level.enemies.forEach((enemy) => {
       enemy.getReaLFrame();
-      if (this.character.isColliding(enemy)) {
+      if (this.character.isColliding(enemy) && !enemy.isDead()) {
         this.character.hit();
         this.healthBar.setPercentage(this.character.energy);
         console.log('Collision with enemy detected!', this.character.energy);
       }
+    });
+  }
+
+  checkBottleCollisions(){
+    this.throwableObjects.forEach((bottle) => {
+      bottle.getReaLFrame();
+      this.level.enemies.forEach((enemy) => {
+        enemy.getReaLFrame();
+        if (bottle.isColliding(enemy) && !enemy.isDead()) {
+          enemy.energy = 0;
+          console.log('Bottle hit enemy!');
+        }
+      });
     });
   }
 

@@ -14,8 +14,10 @@ class DrawableObject{
   }
 
   draw(ctx){
+    if(this.img)
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
+
 
   drawFrame(ctx){
   //Macht rote kasten drumherum

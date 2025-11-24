@@ -13,6 +13,7 @@ class ThrowableObject extends MovableObject{
     this.applyGravity();
     setInterval(() => {
       if(this.otherDirection){
+        this.y = this.y -100;
         this.x -= 10;
       } else {
         this.x += 10;

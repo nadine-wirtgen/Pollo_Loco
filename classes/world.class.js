@@ -5,7 +5,9 @@ class World {
   ctx;
   keyboard;
   camera_x = 0;
-  statusBar = new StatusBar();
+  healthBar = new HealthBar();
+  bottleBar = new BottleBar();
+  coinsBar = new CoinsBar();
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -26,7 +28,9 @@ class World {
 
     this.ctx.translate(-this.camera_x, 0);
     // --------- Space for fixed objects -----------
-    this.addToMap(this.statusBar);
+    this.addToMap(this.healthBar);
+    this.addToMap(this.bottleBar);
+    this.addToMap(this.coinsBar);
     this.ctx.translate(this.camera_x, 0);
 
     
@@ -64,7 +68,7 @@ class World {
       enemy.getReaLFrame();
       if (this.character.isColliding(enemy)) {
         this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
+        this.healthBar.setPercentage(this.character.energy);
         console.log('Collision with enemy detected!', this.character.energy);
       }
     });

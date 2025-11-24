@@ -1,0 +1,22 @@
+To do:
+
+char: 
+-diffrent animations
+-stop die-animation
+
+chickens:
+-add more chickens
+
+bottles:
+- on ground for collection
+
+statusbars:
+- bottles 
+- coins?
+
+
+background PC:
+- add controller description
+
+boss:
+-statusbars

@@ -9,13 +9,13 @@ class World {
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
-      this.ctx = canvas.getContext('2d');
-      this.canvas = canvas;
-      this.keyboard = keyboard;
-      this.draw();
-      this.setWorld();
-      this.run();
-    }
+    this.ctx = canvas.getContext('2d');
+    this.canvas = canvas;
+    this.keyboard = keyboard;
+    this.draw();
+    this.setWorld();
+    this.run();
+  }
   
 
   draw() {
@@ -47,12 +47,13 @@ class World {
     setInterval(() => {
       this.checkCollisions();
       this.checkThrowObjects();
-    }, 20);
+    }, 80);
   }
 
   checkThrowObjects(){
     if(this.keyboard.D){
       let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+      bottle.otherDirection = this.character.otherDirection;
       this.throwableObjects.push(bottle);
     }
   }

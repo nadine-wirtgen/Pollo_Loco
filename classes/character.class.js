@@ -65,7 +65,7 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.isDead()) return; // prevent movement when dead
       
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x + 100) {
         this.moveRight();
         this.otherDirection = false;
       }
@@ -86,7 +86,13 @@ class Character extends MovableObject {
       if (this.world.keyboard.D) {
         
       }
-      this.world.camera_x = -this.x + 100;
+      
+      // Kamera stoppt am Level-Ende, folgt aber noch nach links
+      if (this.x < this.world.level.level_end_x - 100) {
+        this.world.camera_x = -this.x + 100;
+      } else {
+        this.world.camera_x = -(this.world.level.level_end_x - 100) + 100;
+      }
     }, 1000 / 60);
 
 

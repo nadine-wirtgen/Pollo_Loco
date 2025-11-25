@@ -7,7 +7,7 @@ class CoinsBar extends StatusBar{
     '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/orange/60.png',
     '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png',
     '../assets/img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png'
-  ], 120);
+  ], 90);
   }
   
 }

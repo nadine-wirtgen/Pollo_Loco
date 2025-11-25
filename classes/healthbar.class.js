@@ -8,6 +8,6 @@ class HealthBar extends StatusBar {
       '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/orange/60.png',
       '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/orange/80.png',
       '../assets/img/7_statusbars/1_statusbar/2_statusbar_health/orange/100.png'
-    ], 20);
+    ], 10);
   }
 }

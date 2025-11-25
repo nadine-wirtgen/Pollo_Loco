@@ -40,9 +40,22 @@ class Character extends MovableObject {
     '../assets/img/2_character_pepe/5_dead/D-56.png',
     '../assets/img/2_character_pepe/5_dead/D-57.png'
   ];
+  IMAGES_SLEEP =[
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
+    '../assets/img/2_character_pepe/1_idle/long_idle/I-20.png'
+  ]
   currentImageIndex = 0;
   world;
   deadAnimationFinished = false;
+  lastMovement = Date.now();
   offset = {
     top: 100,
     bottom: 10,
@@ -56,6 +69,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_SLEEP);
     this.applyGravity();
     this.animate();
     this.getReaLFrame();
@@ -68,23 +82,27 @@ class Character extends MovableObject {
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x + 350) {
         this.moveRight();
         this.otherDirection = false;
+        this.lastMovement = Date.now();
       }
 
       if (this.world.keyboard.LEFT && this.x > 0) {
         this.moveLeft();
         this.otherDirection = true;
+        this.lastMovement = Date.now();
       }
 
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump(); 
+        this.jump();
+        this.lastMovement = Date.now();
       }
 
       if (this.world.keyboard.DOWN) {
         // duck action
+        this.lastMovement = Date.now();
       }
 
       if (this.world.keyboard.D) {
-        
+        this.lastMovement = Date.now();
       }
       
       // Kamera stoppt am Level-Ende, folgt aber noch nach links
@@ -97,6 +115,8 @@ class Character extends MovableObject {
 
 
     setInterval(() => {
+      let idleTime = (Date.now() - this.lastMovement) / 1000;
+      
       if(this.isDead()){
         if (!this.deadAnimationFinished) {
           if (this.currentImageIndex < this.IMAGES_DEAD.length) {
@@ -111,13 +131,15 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAboveGround()){
         this.playAnimation(this.IMAGES_JUMPING);
+      } else if (idleTime > 5) {
+        // Sleep animation (slower)
+        this.playAnimation(this.IMAGES_SLEEP);
+      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+        // walking animation
+        this.playAnimation(this.IMAGES_WALKING);
       } else {
-        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-          // walking animation
-          this.playAnimation(this.IMAGES_WALKING);
-        } else {
-          this.playAnimation([this.IMAGES_JUMPING[0]]);
-        }}
-    }, 50);
+        this.playAnimation([this.IMAGES_JUMPING[0]]);
+      }
+    }, 100);
   }
 }

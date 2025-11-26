@@ -79,6 +79,9 @@ class Character extends MovableObject {
     setInterval(() => {
       if (this.isDead()) return; // prevent movement when dead
       
+      // Check if game is won (boss is dead)
+      if(this.world.gameWon) return; // prevent movement when game is won
+      
       if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x + 350) {
         this.moveRight();
         this.otherDirection = false;
@@ -127,6 +130,9 @@ class Character extends MovableObject {
             this.img = this.imageCache[this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1]];
           }
         }
+      } else if (this.world.gameWon) {
+        // Stop all animations when game is won
+        return;
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
       } else if (this.isAboveGround()){

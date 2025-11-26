@@ -14,6 +14,11 @@ class World {
   bottleCount = 0;
   coinCount = 0;
   lastThrow = 0;
+  gameOverImage = new Image();
+  youWinImage = new Image();
+  gameOverTime = null;
+  youWinTime = null;
+  gameWon = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
@@ -21,6 +26,8 @@ class World {
     this.keyboard = keyboard;
     this.bottleBar.setPercentage(0);
     this.coinsBar.setPercentage(0);
+    this.gameOverImage.src = '../assets/img/You won, you lost/You lost.png';
+    this.youWinImage.src = '../assets/img/You won, you lost/You Win A.png';
     this.draw();
     this.setWorld();
     this.run();
@@ -32,6 +39,11 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
+    this.addObjectsToMap(this.level.enemies);
+    this.addToMap(this.character);
+    this.addObjectsToMap(this.throwableObjects);
 
     this.ctx.translate(-this.camera_x, 0);
     // --------- Space for fixed objects -----------
@@ -42,12 +54,40 @@ class World {
       this.addToMap(this.bossBar);
     }
     this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.level.bottles);
-    this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMap(this.level.enemies);
-    this.addToMap(this.character);
-    this.addObjectsToMap(this.throwableObjects);
+   
     this.ctx.translate(-this.camera_x, 0);
+    
+    // Show game over or win screen after 1 second delay
+    if(this.character.isDead()){
+      if(this.gameOverTime === null){
+        this.gameOverTime = Date.now();
+      }
+      if(Date.now() - this.gameOverTime > 1000){
+        let aspectRatio = 1.5; // Width/Height ratio to prevent distortion
+        let imgWidth = 450;
+        let imgHeight = imgWidth / aspectRatio;
+        let x = (this.canvas.width - imgWidth) / 2;
+        let y = (this.canvas.height - imgHeight) / 2;
+        this.ctx.drawImage(this.gameOverImage, x, y, imgWidth, imgHeight);
+      }
+    }
+    
+    let boss = this.level.enemies.find(e => e instanceof Boss);
+    if(boss && boss.isDead()){
+      if(this.youWinTime === null){
+        this.youWinTime = Date.now();
+        this.gameWon = true; // Set flag immediately when boss dies
+      }
+      if(Date.now() - this.youWinTime > 1000){
+        let aspectRatio = 1.5; // Width/Height ratio to prevent distortion
+        let imgWidth = 450;
+        let imgHeight = imgWidth / aspectRatio;
+        let x = (this.canvas.width - imgWidth) / 2;
+        let y = (this.canvas.height - imgHeight) / 2;
+        this.ctx.drawImage(this.youWinImage, x, y, imgWidth, imgHeight);
+      }
+    }
+    
     let self = this;
     requestAnimationFrame(() => self.draw());
     
@@ -59,6 +99,13 @@ class World {
 
   run() {
     setInterval(() => {
+      // Stop all game logic when game is over
+      let boss = this.level.enemies.find(e => e instanceof Boss);
+      let gameOver = this.character.isDead() && this.gameOverTime && (Date.now() - this.gameOverTime > 1000);
+      let gameWon = boss && boss.isDead() && this.youWinTime && (Date.now() - this.youWinTime > 1000);
+      
+      if(gameOver || gameWon) return;
+      
       this.checkCollisions();
       this.checkThrowObjects();
       this.checkBottleCollisions();

@@ -99,11 +99,6 @@ class Character extends MovableObject {
         this.lastMovement = Date.now();
       }
 
-      if (this.world.keyboard.DOWN) {
-        // duck action
-        this.lastMovement = Date.now();
-      }
-
       if (this.world.keyboard.D) {
         this.lastMovement = Date.now();
       }

@@ -63,7 +63,7 @@ class World {
         this.gameOverTime = Date.now();
       }
       if(Date.now() - this.gameOverTime > 1000){
-        let aspectRatio = 1.5; // Width/Height ratio to prevent distortion
+        let aspectRatio = 1.5;
         let imgWidth = 450;
         let imgHeight = imgWidth / aspectRatio;
         let x = (this.canvas.width - imgWidth) / 2;
@@ -76,10 +76,10 @@ class World {
     if(boss && boss.isDead()){
       if(this.youWinTime === null){
         this.youWinTime = Date.now();
-        this.gameWon = true; // Set flag immediately when boss dies
+        this.gameWon = true;
       }
       if(Date.now() - this.youWinTime > 1000){
-        let aspectRatio = 1.5; // Width/Height ratio to prevent distortion
+        let aspectRatio = 1.5;
         let imgWidth = 450;
         let imgHeight = imgWidth / aspectRatio;
         let x = (this.canvas.width - imgWidth) / 2;
@@ -133,13 +133,10 @@ class World {
     this.level.enemies.forEach((enemy) => {
       enemy.getReaLFrame();
       if (this.character.isColliding(enemy) && !enemy.isDead()) {
-        // Check if character is jumping on chicken from above
-        // Character must be in air, falling, and coming from above
         if (enemy instanceof Chicken && this.character.isAboveGround() && this.character.speedY < 0) {
           enemy.energy = 0;
           console.log('Jumped on chicken!');
         } else if (enemy instanceof Chicken && !this.character.isHurt()) {
-          // Only chickens deal damage through collision, not boss
           this.character.hit();
           this.healthBar.setPercentage(this.character.energy);
           console.log('Collision with chicken detected!', this.character.energy);
@@ -163,7 +160,7 @@ class World {
             enemy.energy = 0;
             console.log('Bottle hit enemy!');
           }
-          this.throwableObjects.splice(bottleIndex, 1); // Remove bottle after hit
+          this.throwableObjects.splice(bottleIndex, 1);
         }
       });
     });
@@ -255,7 +252,7 @@ class World {
           if(!this.character.isDead()){
             boss.bossState = 'walking';
           }
-        }, 1200); // 8 frames * 150ms
+        }, 1200); 
       }
     }
   }

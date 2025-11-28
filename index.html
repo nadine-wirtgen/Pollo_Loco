@@ -31,8 +31,20 @@
 <body onload="init()">
   <h1>El Pollo Loco</h1>
 
-  <canvas id="canvas" width="720" height="480px">
-    Your browser does not support the HTML5 canvas tag.
-  </canvas>
+  <div id="canvasContainer">
+    <canvas id="canvas" width="720" height="480px">
+      Your browser does not support the HTML5 canvas tag.
+    </canvas>
+
+    <div id="gameOverScreen" style="display: none;">
+      <img src="assets/img/You won, you lost/You lost.png" alt="Game Over">
+      <button onclick="restartGame()">Restart</button>
+    </div>
+
+    <div id="youWinScreen" style="display: none;">
+      <img src="assets/img/You won, you lost/You Win A.png" alt="You Win">
+      <button onclick="restartGame()">Restart</button>
+    </div>
+  </div>
 </body>
 </html>

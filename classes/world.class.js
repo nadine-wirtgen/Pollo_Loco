@@ -14,8 +14,6 @@ class World {
   bottleCount = 0;
   coinCount = 0;
   lastThrow = 0;
-  gameOverImage = new Image();
-  youWinImage = new Image();
   gameOverTime = null;
   youWinTime = null;
   gameWon = false;
@@ -26,8 +24,6 @@ class World {
     this.keyboard = keyboard;
     this.bottleBar.setPercentage(0);
     this.coinsBar.setPercentage(0);
-    this.gameOverImage.src = '../assets/img/You won, you lost/You lost.png';
-    this.youWinImage.src = '../assets/img/You won, you lost/You Win A.png';
     this.draw();
     this.setWorld();
     this.run();
@@ -63,12 +59,7 @@ class World {
         this.gameOverTime = Date.now();
       }
       if(Date.now() - this.gameOverTime > 1000){
-        let aspectRatio = 1.5;
-        let imgWidth = 450;
-        let imgHeight = imgWidth / aspectRatio;
-        let x = (this.canvas.width - imgWidth) / 2;
-        let y = (this.canvas.height - imgHeight) / 2;
-        this.ctx.drawImage(this.gameOverImage, x, y, imgWidth, imgHeight);
+        document.getElementById('gameOverScreen').style.display = 'flex';
       }
     }
     
@@ -79,12 +70,7 @@ class World {
         this.gameWon = true;
       }
       if(Date.now() - this.youWinTime > 1000){
-        let aspectRatio = 1.5;
-        let imgWidth = 450;
-        let imgHeight = imgWidth / aspectRatio;
-        let x = (this.canvas.width - imgWidth) / 2;
-        let y = (this.canvas.height - imgHeight) / 2;
-        this.ctx.drawImage(this.youWinImage, x, y, imgWidth, imgHeight);
+        document.getElementById('youWinScreen').style.display = 'flex';
       }
     }
     
@@ -137,9 +123,12 @@ class World {
           enemy.energy = 0;
           console.log('Jumped on chicken!');
         } else if (enemy instanceof Chicken && !this.character.isHurt()) {
-          this.character.hit();
+          this.character.hit(5);
           this.healthBar.setPercentage(this.character.energy);
           console.log('Collision with chicken detected!', this.character.energy);
+        } else if (enemy instanceof Boss && !this.character.isHurt()) {
+          this.character.hit(20);
+          this.healthBar.setPercentage(this.character.energy);
         }
       }
     });
@@ -152,8 +141,7 @@ class World {
         enemy.getReaLFrame();
         if (bottle.isColliding(enemy) && !enemy.isDead()) {
           if(enemy instanceof Boss){
-            enemy.energy -= 20;
-            if(enemy.energy < 0) enemy.energy = 0;
+            enemy.hit(20);
             this.bossBar.setPercentage(enemy.energy);
             console.log('Bottle hit boss! Boss energy:', enemy.energy);
           } else {
@@ -168,30 +156,31 @@ class World {
 
   checkBottleCollection(){
     if(this.bottleCount >= 5) return;
-    this.character.getReaLFrame();
-    this.level.bottles.forEach((bottle, index) => {
-      bottle.getReaLFrame();
-      if (this.character.isColliding(bottle)) {
-        this.level.bottles.splice(index, 1);
-        this.bottleCount++;
-        this.bottleBar.setPercentage(this.bottleCount * 20);
-        // Spawn new bottle
-        this.level.bottles.push(new BottleGround());
-        console.log('Bottle collected! Total:', this.bottleCount);
-      }
+    this.checkCollectionFor(this.level.bottles, (index) => {
+      this.level.bottles.splice(index, 1);
+      this.bottleCount++;
+      this.bottleBar.setPercentage(this.bottleCount * 20);
+      this.level.bottles.push(new BottleGround()); // Respawn
+      console.log('Bottle collected! Total:', this.bottleCount);
     });
   }
 
   checkCoinCollection(){
     if(this.coinCount >= 5) return;
+    this.checkCollectionFor(this.level.coins, (index) => {
+      this.level.coins.splice(index, 1);
+      this.coinCount++;
+      this.coinsBar.setPercentage(this.coinCount * 20);
+      console.log('Coin collected! Total:', this.coinCount);
+    });
+  }
+
+  checkCollectionFor(items, onCollect){
     this.character.getReaLFrame();
-    this.level.coins.forEach((coin, index) => {
-      coin.getReaLFrame();
-      if (this.character.isColliding(coin)) {
-        this.level.coins.splice(index, 1);
-        this.coinCount++;
-        this.coinsBar.setPercentage(this.coinCount * 20);
-        console.log('Coin collected! Total:', this.coinCount);
+    items.forEach((item, index) => {
+      item.getReaLFrame();
+      if (this.character.isColliding(item)) {
+        onCollect(index);
       }
     });
   }
@@ -216,7 +205,7 @@ class World {
       setTimeout(() => {
         boss.bossState = 'walking';
         this.showBossBar = true;
-      }, 3200); // 8 frames * 400ms
+      }, 3200);
     }
     
     // Boss walks towards character

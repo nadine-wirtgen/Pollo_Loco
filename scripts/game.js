@@ -7,6 +7,12 @@ function init() {
   world = new World(canvas, keyboard);
 }
 
+function restartGame() {
+  document.getElementById('gameOverScreen').style.display = 'none';
+  document.getElementById('youWinScreen').style.display = 'none';
+  location.reload();
+}
+
 window.addEventListener("keydown", (e) => {
 
   console.log("Key down: " + e.key);

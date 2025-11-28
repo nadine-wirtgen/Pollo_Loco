@@ -33,13 +33,13 @@ class MovableObject extends DrawableObject{
 
   isColliding(movableObject){
     return this.realX + this.realWidth > movableObject.realX &&
-           this.realX < movableObject.realX + movableObject.realWidth &&
-           this.realY + this.realHeight > movableObject.realY &&
-           this.realY < movableObject.realY + movableObject.realHeight;
+            this.realX < movableObject.realX + movableObject.realWidth &&
+            this.realY + this.realHeight > movableObject.realY &&
+            this.realY < movableObject.realY + movableObject.realHeight;
   }
 
-  hit(){
-    this.energy -= 10;
+  hit(damage = 10){
+    this.energy -= damage;
     if (this.energy < 0) {
       this.energy = 0;
     }
@@ -62,6 +62,16 @@ class MovableObject extends DrawableObject{
     let path = images[i];
     this.img = this.imageCache[path];
     this.currentImageIndex++;
+  }
+
+  playAnimationOnce(images){
+    if (this.currentImageIndex < images.length) {
+      let path = images[this.currentImageIndex];
+      this.img = this.imageCache[path];
+      this.currentImageIndex++;
+      return false; // not finished
+    }
+    return true; // finished
   }
 
   moveRight(){

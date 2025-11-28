@@ -1,9 +1,58 @@
+#canvasContainer {
+  position: relative;
+  display: inline-block;
+}
+
 canvas {
   background-image: url('../assets/img/pageBackground.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   display: block;
+}
+
+#gameOverScreen, #youWinScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  z-index: 1000;
+}
+
+#gameOverScreen img, #youWinScreen img {
+  max-width: 300px;
+  width: 50%;
+  height: auto;
+}
+
+#youWinScreen img {
+  max-width: 250px;
+  width: 40%;
+}
+
+#gameOverScreen button, #youWinScreen button {
+  padding: 8px 25px;
+  font-size: 18px;
+  font-family: 'zabars', sans-serif;
+  background-color: #ff6b00;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+#gameOverScreen button:hover, #youWinScreen button:hover {
+  transform: scale(1.1);
+  background-color: #ff8533;
 }
 
 @media only screen and (max-width: 720px) {

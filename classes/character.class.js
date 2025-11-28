@@ -117,13 +117,7 @@ class Character extends MovableObject {
       
       if(this.isDead()){
         if (!this.deadAnimationFinished) {
-          if (this.currentImageIndex < this.IMAGES_DEAD.length) {
-            this.playAnimation(this.IMAGES_DEAD);
-          } else {
-            this.deadAnimationFinished = true;
-            // stay on last frame
-            this.img = this.imageCache[this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1]];
-          }
+          this.deadAnimationFinished = this.playAnimationOnce(this.IMAGES_DEAD);
         }
       } else if (this.world.gameWon) {
         // Stop all animations when game is won

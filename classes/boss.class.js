@@ -80,12 +80,7 @@ class Boss extends MovableObject {
         }
         
         if (!this.deadAnimationFinished) {
-          if (this.currentImageIndex < this.IMAGES_DEAD.length) {
-            this.playAnimation(this.IMAGES_DEAD);
-          } else {
-            this.deadAnimationFinished = true;
-            this.img = this.imageCache[this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1]];
-          }
+          this.deadAnimationFinished = this.playAnimationOnce(this.IMAGES_DEAD);
         }
       }
     }, 60);

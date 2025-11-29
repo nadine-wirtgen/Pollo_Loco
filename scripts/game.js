@@ -1,8 +1,12 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let gameStarted = false;
 
-function init() {
+function startGame() {
+  gameStarted = true;
+  localStorage.setItem('gameStarted', 'true');
+  document.getElementById('startScreen').style.display = 'none';
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
 }
@@ -12,6 +16,14 @@ function restartGame() {
   document.getElementById('youWinScreen').style.display = 'none';
   location.reload();
 }
+
+// Check if game was already started (after restart)
+window.addEventListener('load', () => {
+  if (localStorage.getItem('gameStarted') === 'true') {
+    localStorage.removeItem('gameStarted');
+    startGame();
+  }
+});
 
 window.addEventListener("keydown", (e) => {
 

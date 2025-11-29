@@ -17,6 +17,9 @@ class World {
   gameOverTime = null;
   youWinTime = null;
   gameWon = false;
+  runInterval = null;
+  animationFrameId = null;
+  stopped = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
@@ -75,8 +78,9 @@ class World {
     }
     
     let self = this;
-    requestAnimationFrame(() => self.draw());
-    
+    if (!this.stopped) {
+      this.animationFrameId = requestAnimationFrame(() => self.draw());
+    }
   }
 
   setWorld() {
@@ -84,7 +88,7 @@ class World {
   }
 
   run() {
-    setInterval(() => {
+    this.runInterval = setInterval(() => {
       // Stop all game logic when game is over
       let boss = this.level.enemies.find(e => e instanceof Boss);
       let gameOver = this.character.isDead() && this.gameOverTime && (Date.now() - this.gameOverTime > 1000);
@@ -99,6 +103,16 @@ class World {
       this.checkCoinCollection();
       this.updateBoss();
     }, 1000 / 60);
+  }
+
+  stop() {
+    this.stopped = true;
+    if (this.runInterval) {
+      clearInterval(this.runInterval);
+    }
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
   }
 
   checkThrowObjects(){

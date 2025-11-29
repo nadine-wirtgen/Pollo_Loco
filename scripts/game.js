@@ -1,29 +1,28 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let gameStarted = false;
 
 function startGame() {
-  gameStarted = true;
-  localStorage.setItem('gameStarted', 'true');
   document.getElementById('startScreen').style.display = 'none';
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
 }
 
 function restartGame() {
+  // Stop old world completely
+  if (world) {
+    world.stop();
+  }
+  
+  // Hide all screens
   document.getElementById('gameOverScreen').style.display = 'none';
   document.getElementById('youWinScreen').style.display = 'none';
-  location.reload();
+  document.getElementById('startScreen').style.display = 'none';
+  
+  // Create new world
+  canvas = document.getElementById("canvas");
+  world = new World(canvas, keyboard);
 }
-
-// Check if game was already started (after restart)
-window.addEventListener('load', () => {
-  if (localStorage.getItem('gameStarted') === 'true') {
-    localStorage.removeItem('gameStarted');
-    startGame();
-  }
-});
 
 window.addEventListener("keydown", (e) => {
 

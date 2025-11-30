@@ -1,11 +1,34 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let soundManager = new SoundManager();
+
+// Start menu music on first user interaction
+document.addEventListener('click', () => {
+  if (soundManager.menuMusic.paused && !world) {
+    soundManager.startMenuMusic();
+  }
+}, { once: false });
+
+// Also try on button hover
+window.addEventListener('load', () => {
+  const startButton = document.getElementById('startButton');
+  if (startButton) {
+    startButton.addEventListener('mouseenter', () => {
+      if (soundManager.menuMusic.paused && !world) {
+        soundManager.startMenuMusic();
+      }
+    }, { once: true });
+  }
+});
 
 function startGame() {
+  soundManager.stopMenuMusic();
+  soundManager.startGameMusic();
+  
   document.getElementById('startScreen').style.display = 'none';
   canvas = document.getElementById("canvas");
-  world = new World(canvas, keyboard);
+  world = new World(canvas, keyboard, soundManager);
 }
 
 function restartGame() {
@@ -14,6 +37,9 @@ function restartGame() {
     world.stop();
   }
   
+  // Reset music
+  soundManager.resetGameMusic();
+  
   // Hide all screens
   document.getElementById('gameOverScreen').style.display = 'none';
   document.getElementById('youWinScreen').style.display = 'none';
@@ -21,7 +47,7 @@ function restartGame() {
   
   // Create new world
   canvas = document.getElementById("canvas");
-  world = new World(canvas, keyboard);
+  world = new World(canvas, keyboard, soundManager);
 }
 
 window.addEventListener("keydown", (e) => {

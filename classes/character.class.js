@@ -56,6 +56,7 @@ class Character extends MovableObject {
   world;
   deadAnimationFinished = false;
   lastMovement = Date.now();
+  wasAboveGround = false;
   offset = {
     top: 100,
     bottom: 10,
@@ -96,12 +97,19 @@ class Character extends MovableObject {
 
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
         this.jump();
+        this.world.soundManager.playJump();
         this.lastMovement = Date.now();
       }
 
       if (this.world.keyboard.D) {
         this.lastMovement = Date.now();
       }
+      
+      // Check if character just landed
+      if (this.wasAboveGround && !this.isAboveGround()) {
+        this.world.soundManager.playLand();
+      }
+      this.wasAboveGround = this.isAboveGround();
       
       // Kamera stoppt am Level-Ende, folgt aber noch nach links
       if (this.x < this.world.level.level_end_x - 100) {

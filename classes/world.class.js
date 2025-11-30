@@ -20,11 +20,13 @@ class World {
   runInterval = null;
   animationFrameId = null;
   stopped = false;
+  soundManager;
 
-  constructor(canvas, keyboard) {
+  constructor(canvas, keyboard, soundManager) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.soundManager = soundManager;
     this.bottleBar.setPercentage(0);
     this.coinsBar.setPercentage(0);
     this.draw();

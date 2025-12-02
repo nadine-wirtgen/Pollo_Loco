@@ -33,24 +33,24 @@
 }
 
 /* Show rotate message only on portrait mobile devices */
-@media (orientation: portrait) and (max-width: 900px) {
+@media (orientation: portrait) and (max-width: 720px) {
   #rotateMessage {
-    display: flex !important;
+    display: flex;
   }
   
   #canvasContainer {
-    display: none !important;
+    display: none;
   }
   
   h1 {
-    display: none !important;
+    display: none;
   }
 }
 
 /* Show game on landscape mobile devices */
-@media (orientation: landscape) and (max-width: 900px) {
+@media (orientation: landscape) and (max-width: 720px) {
   #rotateMessage {
-    display: none !important;
+    display: none;
   }
   
   h1 {

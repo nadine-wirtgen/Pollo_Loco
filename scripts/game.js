@@ -3,6 +3,11 @@ let world;
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 
+function toggleSound() {
+  const isMuted = soundManager.toggleMute();
+  document.getElementById('muteButton').textContent = isMuted ? '🔇' : '🔊';
+}
+
 // Start menu music on first user interaction
 document.addEventListener('click', () => {
   if (soundManager.menuMusic.paused && !world) {

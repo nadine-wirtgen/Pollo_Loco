@@ -57,6 +57,7 @@ class Character extends MovableObject {
   deadAnimationFinished = false;
   lastMovement = Date.now();
   wasAboveGround = false;
+  isSnoozing = false;
   offset = {
     top: 100,
     bottom: 10,
@@ -135,12 +136,24 @@ class Character extends MovableObject {
       } else if (this.isAboveGround()){
         this.playAnimation(this.IMAGES_JUMPING);
       } else if (idleTime > 5) {
-        // Sleep animation (slower)
+        // Sleep animation
+        if (!this.isSnoozing) {
+          this.world.soundManager.playSnooze();
+          this.isSnoozing = true;
+        }
         this.playAnimation(this.IMAGES_SLEEP);
       } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         // walking animation
+        if (this.isSnoozing) {
+          this.world.soundManager.stopSnooze();
+          this.isSnoozing = false;
+        }
         this.playAnimation(this.IMAGES_WALKING);
       } else {
+        if (this.isSnoozing) {
+          this.world.soundManager.stopSnooze();
+          this.isSnoozing = false;
+        }
         this.playAnimation([this.IMAGES_JUMPING[0]]);
       }
     }, 100);

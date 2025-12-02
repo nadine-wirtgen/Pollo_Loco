@@ -3,6 +3,28 @@
   display: inline-block;
 }
 
+#muteButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  padding: 8px;
+  border-radius: 5px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s;
+  pointer-events: auto;
+  color: white;
+}
+
+#muteButton:hover {
+  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.7);
+}
+
 canvas {
   background-image: url('../assets/img/pageBackground.jpg');
   background-size: cover;
@@ -23,7 +45,7 @@ canvas {
   align-items: center;
   justify-content: center;
   gap: 30px;
-  z-index: 1000;
+  z-index: 1;
 }
 
 #startScreen {
@@ -39,11 +61,16 @@ canvas {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: -1;
 }
 
 #startScreen button {
   position: relative;
   margin-top: 80px;
+  z-index: 1;
+}
+
+#startScreen #startButton {
   z-index: 1;
 }
 
@@ -76,25 +103,13 @@ canvas {
   background-color: #ff8533;
 }
 
-@media only screen and (max-width: 720px) {
+@media (max-width: 900px) {
   h1 {
     display: none;
   }
   
   canvas {
-    width: 100vw;
-    height: 100vh;
-    object-fit: contain;
-  }
-}
-
-@media only screen and (max-height: 480px) {
-  h1 {
-    display: none;
-  }
-  
-  canvas {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     object-fit: contain;
   }

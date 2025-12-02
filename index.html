@@ -58,7 +58,26 @@
       <button onclick="restartGame()">Restart</button>
     </div>
     
-    <button id="muteButton" onclick="toggleSound()">🔊</button>
+    <button id="muteButton" onclick="toggleSound()">
+      <img src="assets/icons/sound_on.png" alt="Sound" id="muteIcon">
+    </button>
+
+    <div id="mobileControls">
+      <div class="controlsLeft">
+        <button class="controlBtn" id="jumpBtn">
+          <img src="assets/icons/arrow_up.png" alt="Jump">
+        </button>
+        <button class="controlBtn" id="throwBtn">💣</button>
+      </div>
+      <div class="controlsRight">
+        <button class="controlBtn" id="leftBtn">
+          <img src="assets/icons/arrow_left.png" alt="Left">
+        </button>
+        <button class="controlBtn" id="rightBtn">
+          <img src="assets/icons/arrow_right.png" alt="Right">
+        </button>
+      </div>
+    </div>
   </div>
 </body>
 </html>

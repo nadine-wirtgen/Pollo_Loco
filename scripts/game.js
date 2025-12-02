@@ -5,7 +5,8 @@ let soundManager = new SoundManager();
 
 function toggleSound() {
   const isMuted = soundManager.toggleMute();
-  document.getElementById('muteButton').textContent = isMuted ? '🔇' : '🔊';
+  const icon = document.getElementById('muteIcon');
+  icon.src = isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
 }
 
 // Start menu music on first user interaction
@@ -25,6 +26,20 @@ window.addEventListener('load', () => {
       }
     }, { once: true });
   }
+
+  // Mobile touch controls
+  const bindButton = (id, key) => {
+    const btn = document.getElementById(id);
+    btn.addEventListener('touchstart', (e) => { e.preventDefault(); keyboard[key] = true; });
+    btn.addEventListener('touchend', (e) => { e.preventDefault(); keyboard[key] = false; });
+    btn.addEventListener('mousedown', (e) => { e.preventDefault(); keyboard[key] = true; });
+    btn.addEventListener('mouseup', (e) => { e.preventDefault(); keyboard[key] = false; });
+  };
+
+  bindButton('jumpBtn', 'SPACE');
+  bindButton('throwBtn', 'D');
+  bindButton('leftBtn', 'LEFT');
+  bindButton('rightBtn', 'RIGHT');
 });
 
 function startGame() {
@@ -32,6 +47,7 @@ function startGame() {
   soundManager.startGameMusic();
   
   document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('mobileControls').classList.add('active');
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard, soundManager);
 }
@@ -49,6 +65,7 @@ function restartGame() {
   document.getElementById('gameOverScreen').style.display = 'none';
   document.getElementById('youWinScreen').style.display = 'none';
   document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('mobileControls').classList.add('active');
   
   // Create new world
   canvas = document.getElementById("canvas");

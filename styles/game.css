@@ -7,22 +7,26 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 20px;
-  background: rgba(0, 0, 0, 0.5);
+  background: transparent;
   border: none;
   cursor: pointer;
   z-index: 2;
-  padding: 8px;
-  border-radius: 5px;
+  padding: 0;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
   transition: transform 0.2s;
   pointer-events: auto;
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#muteButton img {
+  width: 30px;
+  height: 30px;
 }
 
 #muteButton:hover {
   transform: scale(1.1);
-  background: rgba(0, 0, 0, 0.7);
 }
 
 canvas {
@@ -103,7 +107,59 @@ canvas {
   background-color: #ff8533;
 }
 
-@media (max-width: 900px) {
+#mobileControls {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.controlsLeft, .controlsRight {
+  display: flex;
+  gap: 15px;
+  pointer-events: auto;
+}
+
+.controlsRight {
+  margin-right: 40px;
+}
+
+.controlBtn {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+}
+
+.controlBtn img {
+  width: 35px;
+  height: 35px;
+  pointer-events: none;
+}
+
+.controlBtn:active {
+  background: rgba(255, 107, 0, 0.7);
+  transform: scale(0.95);
+}
+
+@media (max-width: 720px) {
   h1 {
     display: none;
   }
@@ -112,5 +168,9 @@ canvas {
     width: 100%;
     height: 100vh;
     object-fit: contain;
+  }
+
+  #mobileControls.active {
+    display: flex;
   }
 }

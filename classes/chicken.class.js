@@ -10,14 +10,14 @@ class Chicken extends MovableObject {
     right: 5
   };
   IMAGES_WALKING = [
-    '../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
-    '../assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
-    '../assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
+    'assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
+    'assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
+    'assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
   ]
-  IMAGE_DEAD = '../assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
+  IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
 
   constructor(){
-    super().loadImage('../assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
+    super().loadImage('assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
     this.loadImages(this.IMAGES_WALKING);
     this.loadImage(this.IMAGE_DEAD);
     this.x = 500 + Math.random() * 1200; // Zufällige x-Position zwischen 500 und 1700

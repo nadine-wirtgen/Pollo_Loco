@@ -5,7 +5,7 @@ class Coin extends CollectableItem {
   ];
 
   constructor() {
-    super('assets/img/8_coin/coin_1.png', 500 + Math.random() * 900, 100 + Math.random() * 150, 100, 100);
+    super('assets/img/8_coin/coin_1.png', 500 + Math.random() * 3000, 100 + Math.random() * 150, 100, 100);
     this.loadImages(this.IMAGES_COIN);
     this.animate();
   }

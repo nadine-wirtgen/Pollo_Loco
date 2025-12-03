@@ -55,6 +55,7 @@ class Character extends MovableObject {
   currentImageIndex = 0;
   world;
   deadAnimationFinished = false;
+  deadAnimationStarted = false;
   lastMovement = Date.now();
   wasAboveGround = false;
   isSnoozing = false;
@@ -75,6 +76,25 @@ class Character extends MovableObject {
     this.applyGravity();
     this.animate();
     this.getReaLFrame();
+  }
+
+  hit(damage = 10){
+    super.hit(damage);
+    this.world.soundManager.playHit();
+  }
+
+  isHurt(){
+    if(this.isDead()) return false;
+    let timepassed = (Date.now() - this.lastHit) / 1000;
+    return timepassed < 0.5;
+  }
+
+  isDead(){
+    if(this.energy < 20 && !this.deadAnimationStarted){
+      this.deadAnimationStarted = true;
+      this.currentImageIndex = 0;
+    }
+    return this.energy < 20;
   }
 
   animate(){

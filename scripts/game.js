@@ -9,6 +9,14 @@ function toggleSound() {
   icon.src = isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
 }
 
+function showControls() {
+  document.getElementById('controlsModal').style.display = 'flex';
+}
+
+function closeControls() {
+  document.getElementById('controlsModal').style.display = 'none';
+}
+
 // Start menu music on first user interaction
 document.addEventListener('click', () => {
   if (soundManager.menuMusic.paused && !world) {
@@ -47,6 +55,7 @@ function startGame() {
   soundManager.startGameMusic();
   
   document.getElementById('startScreen').style.display = 'none';
+  document.querySelector('.topButtons').style.display = 'none';
   document.getElementById('mobileControls').classList.add('active');
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard, soundManager);
@@ -70,6 +79,25 @@ function restartGame() {
   // Create new world
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard, soundManager);
+}
+
+function backToMenu() {
+  // Stop old world completely
+  if (world) {
+    world.stop();
+    world = null;
+  }
+  
+  // Stop game music and start menu music
+  soundManager.stopGameMusic();
+  soundManager.startMenuMusic();
+  
+  // Hide all screens and show start screen
+  document.getElementById('gameOverScreen').style.display = 'none';
+  document.getElementById('youWinScreen').style.display = 'none';
+  document.getElementById('startScreen').style.display = 'flex';
+  document.querySelector('.topButtons').style.display = 'flex';
+  document.getElementById('mobileControls').classList.remove('active');
 }
 
 window.addEventListener("keydown", (e) => {

@@ -13,6 +13,7 @@ class World {
   throwableObjects = [];
   bottleCount = 0;
   coinCount = 0;
+  totalCoins = 0;
   lastThrow = 0;
   gameOverTime = null;
   youWinTime = null;
@@ -27,6 +28,7 @@ class World {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.soundManager = soundManager;
+    this.totalCoins = this.level.coins.length;
     this.bottleBar.setPercentage(0);
     this.coinsBar.setPercentage(0);
     this.draw();
@@ -135,17 +137,16 @@ class World {
     this.level.enemies.forEach((enemy) => {
       enemy.getReaLFrame();
       if (this.character.isColliding(enemy) && !enemy.isDead()) {
-        if (enemy instanceof Chicken && this.character.isAboveGround() && this.character.speedY < 0) {
+        if ((enemy instanceof Chicken || enemy instanceof SmallChicken) && this.character.isAboveGround() && this.character.speedY < 0) {
           enemy.energy = 0;
+          this.soundManager.playChickenDeath();
           console.log('Jumped on chicken!');
-        } else if (enemy instanceof Chicken && !this.character.isHurt()) {
+        } else if ((enemy instanceof Chicken || enemy instanceof SmallChicken) && !this.character.isHurt()) {
           this.character.hit(5);
           this.healthBar.setPercentage(this.character.energy);
           console.log('Collision with chicken detected!', this.character.energy);
-        } else if (enemy instanceof Boss && !this.character.isHurt()) {
-          this.character.hit(20);
-          this.healthBar.setPercentage(this.character.energy);
         }
+        // Boss damage is handled in handleBoss() during attack animation
       }
     });
   }
@@ -182,12 +183,13 @@ class World {
   }
 
   checkCoinCollection(){
-    if(this.coinCount >= 5) return;
     this.checkCollectionFor(this.level.coins, (index) => {
       this.level.coins.splice(index, 1);
       this.coinCount++;
-      this.coinsBar.setPercentage(this.coinCount * 20);
-      console.log('Coin collected! Total:', this.coinCount);
+      const percentage = Math.round((this.coinCount / this.totalCoins) * 100);
+      this.coinsBar.setPercentage(percentage);
+      this.soundManager.playCoin();
+      console.log('Coin collected! Total:', this.coinCount, '/', this.totalCoins, '-', percentage + '%');
     });
   }
 
@@ -214,10 +216,13 @@ class World {
     
     let distance = Math.abs(this.character.x - boss.x);
     
-    // Character in view range (within 720px)
-    if(distance < 720 && !boss.hadFirstContact){
+    // Character in view range (within 500px)
+    if(distance < 500 && !boss.hadFirstContact){
       boss.bossState = 'alert';
       boss.hadFirstContact = true;
+      setTimeout(() => {
+        this.soundManager.playBossScream();
+      }, 2000);
       setTimeout(() => {
         boss.bossState = 'walking';
         this.showBossBar = true;
@@ -252,12 +257,13 @@ class World {
             if(this.character.energy < 0) this.character.energy = 0;
             this.healthBar.setPercentage(this.character.energy);
             this.character.lastHit = Date.now();
+            this.soundManager.playHit();
             console.log('Boss attacked! Character energy:', this.character.energy);
           }
           if(!this.character.isDead()){
             boss.bossState = 'walking';
           }
-        }, 1200); 
+        }, 1050); 
       }
     }
   }

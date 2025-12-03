@@ -2,7 +2,7 @@ class Boss extends MovableObject {
   height = 400;
   width = 250;
   y = 50;
-  x = 1650;
+  x = 3800;
   energy = 100;
   speed = 5;
   offset = {

@@ -20,7 +20,7 @@ class Chicken extends MovableObject {
     super().loadImage('assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
     this.loadImages(this.IMAGES_WALKING);
     this.loadImage(this.IMAGE_DEAD);
-    this.x = 500 + Math.random() * 1200; // Zufällige x-Position zwischen 500 und 1700
+    this.x = 500 + Math.random() * 3000; // Zufällige x-Position zwischen 500 und 3500
     this.speed = 0.15 + Math.random() * 0.5; // Zufällige Geschwindigkeit zwischen 0.15 und 0.4  
     // No gravity for chickens - they walk on the ground
     this.animate();

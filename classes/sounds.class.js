@@ -4,6 +4,12 @@ class SoundManager {
   jumpSound = new Audio('assets/audio/character/character_jump.mp3');
   landSound = new Audio('assets/audio/character/character_on_ground.mp3');
   snoozeSound = new Audio('assets/audio/character/character_snooze.mp3');
+  hitSound = new Audio('assets/audio/character/hit1.mp3');
+  coinSound = new Audio('assets/audio/items/collect_coin.mp3');
+  chickenDeathSound = new Audio('assets/audio/chicken/chicken1.mp3');
+  chickenDeathSound2 = new Audio('assets/audio/chicken/chicken2.mp3');
+  chickenDeathSound3 = new Audio('assets/audio/chicken/chicken3.mp3');
+  bossScreamSound = new Audio('assets/audio/boss/chicken_start_scream.mp3');
   isMuted = false;
   
   constructor() {
@@ -20,11 +26,17 @@ class SoundManager {
     this.jumpSound.muted = this.isMuted;
     this.landSound.muted = this.isMuted;
     this.snoozeSound.muted = this.isMuted;
+    this.hitSound.muted = this.isMuted;
+    this.coinSound.muted = this.isMuted;
+    this.chickenDeathSound.muted = this.isMuted;
+    this.chickenDeathSound2.muted = this.isMuted;
+    this.chickenDeathSound3.muted = this.isMuted;
+    this.bossScreamSound.muted = this.isMuted;
     return this.isMuted;
   }
 
   startMenuMusic() {
-    this.menuMusic.play().catch(e => console.log('Menu music play failed:', e));
+    this.menuMusic.play().catch(() => {});
   }
 
   stopMenuMusic() {
@@ -33,7 +45,7 @@ class SoundManager {
   }
 
   startGameMusic() {
-    this.gameMusic.play().catch(e => console.log('Game music play failed:', e));
+    this.gameMusic.play().catch(() => {});
   }
 
   stopGameMusic() {
@@ -42,20 +54,58 @@ class SoundManager {
   }
 
   playJump() {
-    this.jumpSound.play().catch(e => console.log('Jump sound play failed:', e));
+    if (!this.isMuted) {
+      this.jumpSound.currentTime = 0;
+      this.jumpSound.play().catch(e => console.log('Jump sound play failed:', e));
+    }
   }
 
   playLand() {
-    this.landSound.play().catch(e => console.log('Land sound play failed:', e));
+    if (!this.isMuted) {
+      this.landSound.currentTime = 0;
+      this.landSound.play().catch(e => console.log('Land sound play failed:', e));
+    }
   }
 
   playSnooze() {
-    this.snoozeSound.play().catch(e => console.log('Snooze sound play failed:', e));
+    if (!this.isMuted) {
+      this.snoozeSound.play().catch(e => console.log('Snooze sound play failed:', e));
+    }
   }
 
   stopSnooze() {
     this.snoozeSound.pause();
     this.snoozeSound.currentTime = 0;
+  }
+
+  playHit() {
+    if (!this.isMuted) {
+      const hitClone = this.hitSound.cloneNode();
+      hitClone.play().catch(e => console.log('Hit sound play failed:', e));
+    }
+  }
+
+  playCoin() {
+    if (!this.isMuted) {
+      this.coinSound.currentTime = 0;
+      this.coinSound.play().catch(e => console.log('Coin sound play failed:', e));
+    }
+  }
+
+  playChickenDeath() {
+    if (!this.isMuted) {
+      const randomChicken = Math.floor(Math.random() * 3) + 1;
+      const chickenSound = this[`chickenDeathSound${randomChicken === 1 ? '' : randomChicken}`];
+      chickenSound.currentTime = 0;
+      chickenSound.play().catch(e => console.log('Chicken death sound play failed:', e));
+    }
+  }
+
+  playBossScream() {
+    if (!this.isMuted) {
+      this.bossScreamSound.currentTime = 0;
+      this.bossScreamSound.play().catch(e => console.log('Boss scream play failed:', e));
+    }
   }
 
   resetGameMusic() {

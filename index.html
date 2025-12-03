@@ -6,12 +6,15 @@
   <title>Pollo Loco</title>
   <link rel="stylesheet" href="styles/general.css">
   <link rel="stylesheet" href="styles/game.css">
+  <link rel="stylesheet" href="styles/buttons.css">
+  <link rel="stylesheet" href="styles/controls.css">
   <link rel="stylesheet" href="styles/responsiveLayout.css">
   <script src="classes/sounds.class.js"></script>
   <script src="classes/drawable-Object.class.js"></script>
   <script src="classes/movableObject.class.js"></script>
   <script src="classes/character.class.js"></script>
   <script src="classes/chicken.class.js"></script>
+  <script src="classes/small_chicken.class.js"></script>
   <script src="classes/boss.class.js"></script>
   <script src="classes/cloud.class.js"></script>
   <script src="classes/status-bar.class.js"></script>
@@ -43,22 +46,51 @@
       Your browser does not support the HTML5 canvas tag.
     </canvas>
 
+    <div class="topButtons">
+      <a href="imprint.html" class="topBtn">Impressum</a>
+      <button onclick="showControls()" class="topBtn">Controls</button>
+    </div>
+
     <div id="startScreen">
       <img src="assets/img/9_intro_outro_screens/start/startscreen_1.png" alt="Start Screen">
       <button onclick="startGame()" id="startButton">Start</button>
     </div>
 
+    <div id="controlsModal" style="display: none;">
+      <div class="modalContent">
+        <span class="closeBtn" onclick="closeControls()">&times;</span>
+        <h2>Controls</h2>
+        <div class="controlsInfo">
+          <div class="controlRow">
+            <span class="key">← / →</span>
+            <span>Move Left / Right</span>
+          </div>
+          <div class="controlRow">
+            <span class="key">SPACE</span>
+            <span>Jump</span>
+          </div>
+          <div class="controlRow">
+            <span class="key">D</span>
+            <span>Throw Bottle</span>
+          </div>
+          <p class="mobileNote">On mobile devices, use the on-screen buttons</p>
+        </div>
+      </div>
+    </div>
+
     <div id="gameOverScreen" style="display: none;">
       <img src="assets/img/You won, you lost/You lost.png" alt="Game Over">
       <button onclick="restartGame()">Restart</button>
+      <button onclick="backToMenu()">Back to Menu</button>
     </div>
 
     <div id="youWinScreen" style="display: none;">
       <img src="assets/img/You won, you lost/You Win A.png" alt="You Win">
       <button onclick="restartGame()">Restart</button>
+      <button onclick="backToMenu()">Back to Menu</button>
     </div>
     
-    <button id="muteButton" onclick="toggleSound()">
+    <button id="muteButton" onclick="toggleSound(); this.blur();">
       <img src="assets/icons/sound_on.png" alt="Sound" id="muteIcon">
     </button>
 

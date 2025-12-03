@@ -1,0 +1,141 @@
+#controlsModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #2c2c2c;
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 400px;
+  width: 80%;
+  position: relative;
+  color: white;
+  font-family: 'zabars', sans-serif;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  cursor: pointer;
+  color: #ff6b00;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #ff8533;
+}
+
+.modalContent h2 {
+  margin-top: 0;
+  color: #ff6b00;
+  text-align: center;
+}
+
+.controlsInfo {
+  margin-top: 20px;
+}
+
+.controlRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.key {
+  background-color: #ff6b00;
+  padding: 5px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  min-width: 80px;
+  text-align: center;
+}
+
+.mobileNote {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  font-style: italic;
+}
+
+#mobileControls {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.controlsLeft, .controlsRight {
+  display: flex;
+  gap: 15px;
+  pointer-events: auto;
+}
+
+.controlsRight {
+  margin-right: 40px;
+}
+
+.controlBtn {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controlBtn img {
+  width: 35px;
+  height: 35px;
+  pointer-events: none;
+}
+
+.controlBtn:active {
+  background: rgba(255, 107, 0, 0.7);
+  transform: scale(0.95);
+}
+
+#jumpBtn {
+  align-self: flex-start;
+  margin-top: -40px;
+}
+
+#rightBtn {
+  align-self: flex-start;
+  margin-top: -40px;
+}
+
+@media (orientation: landscape) and (hover: none) {
+  #mobileControls.active {
+    display: flex;
+  }
+}

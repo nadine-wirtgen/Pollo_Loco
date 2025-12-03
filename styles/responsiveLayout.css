@@ -33,7 +33,7 @@
 }
 
 /* Show rotate message only on portrait mobile devices */
-@media (orientation: portrait) and (max-width: 720px) {
+@media (orientation: portrait) and (hover: none) {
   #rotateMessage {
     display: flex;
   }
@@ -48,7 +48,7 @@
 }
 
 /* Show game on landscape mobile devices */
-@media (orientation: landscape) and (max-width: 915px) {
+@media (orientation: landscape) and (hover: none) {
   #rotateMessage {
     display: none;
   }

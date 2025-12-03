@@ -1,0 +1,77 @@
+#muteButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#muteButton img {
+  width: 30px;
+  height: 30px;
+}
+
+#muteButton:hover {
+  transform: scale(1.1);
+}
+
+.topButtons {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.topBtn {
+  padding: 8px 15px;
+  font-size: 14px;
+  font-family: 'zabars', sans-serif;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.topBtn:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 107, 0, 0.8);
+}
+
+#startScreen button, #gameOverScreen button, #youWinScreen button {
+  padding: 8px 25px;
+  font-size: 18px;
+  font-family: 'zabars', sans-serif;
+  background-color: #ff6b00;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+#startScreen button:hover, #gameOverScreen button:hover, #youWinScreen button:hover {
+  transform: scale(1.1);
+  background-color: #ff8533;
+}
+
+#startScreen #startButton {
+  z-index: 1;
+  padding: 15px 40px;
+  font-size: 24px;
+}

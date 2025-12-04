@@ -107,3 +107,10 @@
   padding: 15px 40px;
   font-size: 24px;
 }
+
+@media (orientation: landscape) and (hover: none) {
+  #startScreen #startButton {
+    padding: 10px 25px;
+    font-size: 18px;
+  }
+}

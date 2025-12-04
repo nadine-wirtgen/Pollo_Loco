@@ -202,7 +202,6 @@ class World {
       this.bottleCount--;
       this.bottleBar.setPercentage(this.bottleCount * 20);
       this.lastThrow = Date.now();
-      console.log('Bottle thrown! Remaining:', this.bottleCount);
     }
   }
 
@@ -257,7 +256,6 @@ class World {
   killChickenByJump(enemy){
     enemy.energy = 0;
     this.soundManager.playChickenDeath();
-    console.log('Jumped on chicken!');
   }
 
   /**
@@ -266,7 +264,6 @@ class World {
   damageCharacterByChicken(){
     this.character.hit(10);
     this.healthBar.setPercentage(this.character.energy);
-    console.log('Collision with chicken detected!', this.character.energy);
   }
 
   /**
@@ -282,10 +279,8 @@ class World {
             enemy.hit(20);
             this.bossBar.setPercentage(enemy.energy);
             this.soundManager.playBossScream();
-            console.log('Bottle hit boss! Boss energy:', enemy.energy);
           } else {
             enemy.energy = 0;
-            console.log('Bottle hit enemy!');
           }
           this.throwableObjects.splice(bottleIndex, 1);
         }
@@ -304,7 +299,6 @@ class World {
       this.bottleBar.setPercentage(this.bottleCount * 20);
       this.level.bottles.push(new BottleGround()); // Respawn
       this.soundManager.playBottleCollect();
-      console.log('Bottle collected! Total:', this.bottleCount);
     });
   }
 
@@ -318,7 +312,6 @@ class World {
       const percentage = Math.round((this.coinCount / this.totalCoins) * 100);
       this.coinsBar.setPercentage(percentage);
       this.soundManager.playCoin();
-      console.log('Coin collected! Total:', this.coinCount, '/', this.totalCoins, '-', percentage + '%');
     });
   }
 

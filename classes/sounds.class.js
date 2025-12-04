@@ -105,7 +105,7 @@ class SoundManager {
   playJump() {
     if (!this.isMuted) {
       this.jumpSound.currentTime = 0;
-      this.jumpSound.play().catch(e => console.log('Jump sound play failed:', e));
+      this.jumpSound.play().catch(e => {});
     }
   }
 
@@ -115,7 +115,7 @@ class SoundManager {
   playLand() {
     if (!this.isMuted) {
       this.landSound.currentTime = 0;
-      this.landSound.play().catch(e => console.log('Land sound play failed:', e));
+      this.landSound.play().catch(e => {});
     }
   }
 
@@ -124,7 +124,7 @@ class SoundManager {
    */
   playSnooze() {
     if (!this.isMuted) {
-      this.snoozeSound.play().catch(e => console.log('Snooze sound play failed:', e));
+      this.snoozeSound.play().catch(e => {});
     }
   }
 
@@ -147,7 +147,7 @@ class SoundManager {
       this.lastHitSoundTime = now;
       
       const hitClone = this.hitSound.cloneNode();
-      hitClone.play().catch(e => console.log('Hit sound play failed:', e));
+      hitClone.play().catch(e => {});
     }
   }
 
@@ -157,7 +157,7 @@ class SoundManager {
   playCoin() {
     if (!this.isMuted) {
       this.coinSound.currentTime = 0;
-      this.coinSound.play().catch(e => console.log('Coin sound play failed:', e));
+      this.coinSound.play().catch(e => {});
     }
   }
 
@@ -169,7 +169,7 @@ class SoundManager {
       const randomChicken = Math.floor(Math.random() * 3) + 1;
       const chickenSound = this[`chickenDeathSound${randomChicken === 1 ? '' : randomChicken}`];
       chickenSound.currentTime = 0;
-      chickenSound.play().catch(e => console.log('Chicken death sound play failed:', e));
+      chickenSound.play().catch(e => {});
     }
   }
 
@@ -179,7 +179,7 @@ class SoundManager {
   playBossScream() {
     if (!this.isMuted) {
       this.bossScreamSound.currentTime = 0;
-      this.bossScreamSound.play().catch(e => console.log('Boss scream play failed:', e));
+      this.bossScreamSound.play().catch(e => {});
     }
   }
 
@@ -191,7 +191,7 @@ class SoundManager {
       const randomBottle = Math.floor(Math.random() * 3) + 1;
       const bottleSound = this[`bottleCollectSound${randomBottle === 1 ? '' : randomBottle}`];
       bottleSound.currentTime = 0;
-      bottleSound.play().catch(e => console.log('Bottle collect sound play failed:', e));
+      bottleSound.play().catch(e => {});
     }
   }
 

@@ -461,7 +461,6 @@ class World {
     this.healthBar.setPercentage(this.character.energy);
     this.character.lastHit = Date.now();
     this.soundManager.playHit();
-    console.log('Boss attacked! Character energy:', this.character.energy);
   }
 
   /**

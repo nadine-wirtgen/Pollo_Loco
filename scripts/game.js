@@ -123,9 +123,6 @@ function backToMenu() {
 }
 
 window.addEventListener("keydown", (e) => {
-
-  console.log("Key down: " + e.key);
-
   if (e.key === "ArrowRight") {
     keyboard.RIGHT = true;
   }
@@ -149,15 +146,9 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "d" || e.key === "D") {
     keyboard.D = true;
   }
-
-
-  console.log(e);
 });
 
 window.addEventListener("keyup", (e) => {
-
-  console.log("Key up: " + e.key);
-
   if (e.key === "ArrowRight") {
     keyboard.RIGHT = false;
   }
@@ -181,7 +172,4 @@ window.addEventListener("keyup", (e) => {
   if (e.key === "d" || e.key === "D") {
     keyboard.D = false;
   }
-
-
-  console.log(e);
 });

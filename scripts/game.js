@@ -17,6 +17,15 @@ function closeControls() {
   document.getElementById('controlsModal').style.display = 'none';
 }
 
+// Close modal when clicking outside
+document.addEventListener('click', (event) => {
+  const controlsModal = document.getElementById('controlsModal');
+  
+  if (event.target === controlsModal) {
+    closeControls();
+  }
+});
+
 // Start menu music on first user interaction
 document.addEventListener('click', () => {
   if (soundManager.menuMusic.paused && !world) {
@@ -48,7 +57,15 @@ window.addEventListener('load', () => {
   bindButton('throwBtn', 'D');
   bindButton('leftBtn', 'LEFT');
   bindButton('rightBtn', 'RIGHT');
+
+  // Update mute icon on page load
+  updateMuteIcon();
 });
+
+function updateMuteIcon() {
+  const icon = document.getElementById('muteIcon');
+  icon.src = soundManager.isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
+}
 
 function startGame() {
   soundManager.stopMenuMusic();

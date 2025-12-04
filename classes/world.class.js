@@ -38,7 +38,18 @@ class World {
   
 
   draw() {
+    this.clearCanvas();
+    this.drawGameWorld();
+    this.drawFixedObjects();
+    this.handleGameScreens();
+    this.requestNextFrame();
+  }
+
+  clearCanvas(){
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  drawGameWorld(){
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
@@ -47,43 +58,51 @@ class World {
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.character);
     this.addObjectsToMap(this.throwableObjects);
-
     this.ctx.translate(-this.camera_x, 0);
-    // --------- Space for fixed objects -----------
+  }
+
+  drawFixedObjects(){
     this.addToMap(this.healthBar);
     this.addToMap(this.bottleBar);
     this.addToMap(this.coinsBar);
     if(this.showBossBar){
       this.addToMap(this.bossBar);
     }
-    this.ctx.translate(this.camera_x, 0);
-   
-    this.ctx.translate(-this.camera_x, 0);
-    
-    // Show game over or win screen after 1 second delay
+  }
+
+  handleGameScreens(){
     if(this.character.isDead()){
-      if(this.gameOverTime === null){
-        this.gameOverTime = Date.now();
-      }
-      if(Date.now() - this.gameOverTime > 1000){
-        document.getElementById('gameOverScreen').style.display = 'flex';
-      }
+      this.showGameOverScreen();
     }
     
     let boss = this.level.enemies.find(e => e instanceof Boss);
     if(boss && boss.isDead()){
-      if(this.youWinTime === null){
-        this.youWinTime = Date.now();
-        this.gameWon = true;
-      }
-      if(Date.now() - this.youWinTime > 1000){
-        document.getElementById('youWinScreen').style.display = 'flex';
-      }
+      this.showYouWinScreen();
     }
-    
-    let self = this;
+  }
+
+  showGameOverScreen(){
+    if(this.gameOverTime === null){
+      this.gameOverTime = Date.now();
+    }
+    if(Date.now() - this.gameOverTime > 1000){
+      document.getElementById('gameOverScreen').style.display = 'flex';
+    }
+  }
+
+  showYouWinScreen(){
+    if(this.youWinTime === null){
+      this.youWinTime = Date.now();
+      this.gameWon = true;
+    }
+    if(Date.now() - this.youWinTime > 1000){
+      document.getElementById('youWinScreen').style.display = 'flex';
+    }
+  }
+
+  requestNextFrame(){
     if (!this.stopped) {
-      this.animationFrameId = requestAnimationFrame(() => self.draw());
+      this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
   }
 
@@ -92,21 +111,24 @@ class World {
   }
 
   run() {
-    this.runInterval = setInterval(() => {
-      // Stop all game logic when game is over
-      let boss = this.level.enemies.find(e => e instanceof Boss);
-      let gameOver = this.character.isDead() && this.gameOverTime && (Date.now() - this.gameOverTime > 1000);
-      let gameWon = boss && boss.isDead() && this.youWinTime && (Date.now() - this.youWinTime > 1000);
-      
-      if(gameOver || gameWon) return;
-      
-      this.checkCollisions();
-      this.checkThrowObjects();
-      this.checkBottleCollisions();
-      this.checkBottleCollection();
-      this.checkCoinCollection();
-      this.updateBoss();
-    }, 1000 / 60);
+    this.runInterval = setInterval(() => this.runGameLoop(), 1000 / 60);
+  }
+
+  runGameLoop(){
+    if(this.isGameFinished()) return;
+    this.checkCollisions();
+    this.checkThrowObjects();
+    this.checkBottleCollisions();
+    this.checkBottleCollection();
+    this.checkCoinCollection();
+    this.updateBoss();
+  }
+
+  isGameFinished(){
+    let boss = this.level.enemies.find(e => e instanceof Boss);
+    let gameOver = this.character.isDead() && this.gameOverTime && (Date.now() - this.gameOverTime > 1000);
+    let gameWon = boss && boss.isDead() && this.youWinTime && (Date.now() - this.youWinTime > 1000);
+    return gameOver || gameWon;
   }
 
   stop() {
@@ -133,22 +155,43 @@ class World {
   }
 
   checkCollisions(){
+    if(this.character.isDead()) return; // Stop collision checks when character is dead
     this.character.getReaLFrame();
     this.level.enemies.forEach((enemy) => {
       enemy.getReaLFrame();
       if (this.character.isColliding(enemy) && !enemy.isDead()) {
-        if ((enemy instanceof Chicken || enemy instanceof SmallChicken) && this.character.isAboveGround() && this.character.speedY < 0) {
-          enemy.energy = 0;
-          this.soundManager.playChickenDeath();
-          console.log('Jumped on chicken!');
-        } else if ((enemy instanceof Chicken || enemy instanceof SmallChicken) && !this.character.isHurt()) {
-          this.character.hit(5);
-          this.healthBar.setPercentage(this.character.energy);
-          console.log('Collision with chicken detected!', this.character.energy);
-        }
-        // Boss damage is handled in handleBoss() during attack animation
+        this.handleEnemyCollision(enemy);
       }
     });
+  }
+
+  handleEnemyCollision(enemy){
+    if (this.isChicken(enemy) && this.isJumpingOnEnemy()) {
+      this.killChickenByJump(enemy);
+    } else if (this.isChicken(enemy) && !this.character.isHurt()) {
+      this.damageCharacterByChicken();
+    }
+    // Boss damage is handled in updateBoss() during attack animation
+  }
+
+  isChicken(enemy){
+    return enemy instanceof Chicken || enemy instanceof SmallChicken;
+  }
+
+  isJumpingOnEnemy(){
+    return this.character.isAboveGround() && this.character.speedY < 0;
+  }
+
+  killChickenByJump(enemy){
+    enemy.energy = 0;
+    this.soundManager.playChickenDeath();
+    console.log('Jumped on chicken!');
+  }
+
+  damageCharacterByChicken(){
+    this.character.hit(10);
+    this.healthBar.setPercentage(this.character.energy);
+    console.log('Collision with chicken detected!', this.character.energy);
   }
 
   checkBottleCollisions(){
@@ -160,6 +203,7 @@ class World {
           if(enemy instanceof Boss){
             enemy.hit(20);
             this.bossBar.setPercentage(enemy.energy);
+            this.soundManager.playBossScream();
             console.log('Bottle hit boss! Boss energy:', enemy.energy);
           } else {
             enemy.energy = 0;
@@ -178,6 +222,7 @@ class World {
       this.bottleCount++;
       this.bottleBar.setPercentage(this.bottleCount * 20);
       this.level.bottles.push(new BottleGround()); // Respawn
+      this.soundManager.playBottleCollect();
       console.log('Bottle collected! Total:', this.bottleCount);
     });
   }
@@ -205,67 +250,91 @@ class World {
 
   updateBoss(){
     let boss = this.level.enemies.find(e => e instanceof Boss);
-    if(!boss) return;
+    if(!boss || boss.isDead()) return;
     
     if(this.character.isDead()){
       boss.bossState = 'idle';
       return;
     }
     
-    if(boss.isDead()) return; // Stop all boss actions when dead
-    
     let distance = Math.abs(this.character.x - boss.x);
-    
-    // Character in view range (within 500px)
+    this.handleBossFirstContact(boss, distance);
+    this.handleBossWalking(boss, distance);
+  }
+
+  handleBossFirstContact(boss, distance){
     if(distance < 500 && !boss.hadFirstContact){
       boss.bossState = 'alert';
       boss.hadFirstContact = true;
-      setTimeout(() => {
-        this.soundManager.playBossScream();
-      }, 2000);
-      setTimeout(() => {
-        boss.bossState = 'walking';
-        this.showBossBar = true;
-      }, 3200);
+      this.playBossScreamDelayed();
+      this.startBossWalkingDelayed(boss);
+    }
+  }
+
+  playBossScreamDelayed(){
+    setTimeout(() => {
+      this.soundManager.playBossScream();
+    }, 2000);
+  }
+
+  startBossWalkingDelayed(boss){
+    setTimeout(() => {
+      boss.bossState = 'walking';
+      this.showBossBar = true;
+    }, 3200);
+  }
+
+  handleBossWalking(boss, distance){
+    if(boss.bossState !== 'walking') return;
+    
+    let attackDistance = boss.x < this.character.x ? 120 : 40;
+    
+    if(distance > attackDistance){
+      this.moveBossTowardsCharacter(boss);
     }
     
-    // Boss walks towards character
-    if(boss.bossState === 'walking'){
-      // Stop 120px before character when coming from left, closer when from right
-      let attackDistance = boss.x < this.character.x ? 120 : 20;
-      
-      if(distance > attackDistance){
-        if(this.character.x < boss.x){
-          boss.x -= boss.speed;
-          boss.otherDirection = false;
-        } else {
-          boss.x += boss.speed;
-          boss.otherDirection = true;
-        }
-      }
-      
-      // Boss close enough to attack
-      if(distance <= attackDistance && !this.character.isDead()){
-        boss.bossState = 'attacking';
-        boss.currentImageIndex = 0;
-        setTimeout(() => {
-          if(this.character.isDead()) return; // Stop if character died during attack
-          // Check distance at end of attack animation
-          let endDistance = Math.abs(this.character.x - boss.x);
-          if(endDistance <= attackDistance && !this.character.isHurt() && !this.character.isDead()){
-            this.character.energy -= 20;
-            if(this.character.energy < 0) this.character.energy = 0;
-            this.healthBar.setPercentage(this.character.energy);
-            this.character.lastHit = Date.now();
-            this.soundManager.playHit();
-            console.log('Boss attacked! Character energy:', this.character.energy);
-          }
-          if(!this.character.isDead()){
-            boss.bossState = 'walking';
-          }
-        }, 1050); 
-      }
+    if(distance <= attackDistance && !this.character.isDead()){
+      this.startBossAttack(boss, attackDistance);
     }
+  }
+
+  moveBossTowardsCharacter(boss){
+    if(this.character.x < boss.x){
+      boss.x -= boss.speed;
+      boss.otherDirection = false;
+    } else {
+      boss.x += boss.speed;
+      boss.otherDirection = true;
+    }
+  }
+
+  startBossAttack(boss, attackDistance){
+    boss.bossState = 'attacking';
+    boss.currentImageIndex = 0;
+    setTimeout(() => {
+      this.executeBossAttack(boss, attackDistance);
+    }, 1050);
+  }
+
+  executeBossAttack(boss, attackDistance){
+    if(this.character.isDead()) return;
+    
+    let endDistance = Math.abs(this.character.x - boss.x);
+    if(endDistance <= attackDistance && !this.character.isHurt() && !this.character.isDead()){
+      this.damageCharacterByBoss();
+    }
+    if(!this.character.isDead()){
+      boss.bossState = 'walking';
+    }
+  }
+
+  damageCharacterByBoss(){
+    this.character.energy -= 20;
+    if(this.character.energy < 0) this.character.energy = 0;
+    this.healthBar.setPercentage(this.character.energy);
+    this.character.lastHit = Date.now();
+    this.soundManager.playHit();
+    console.log('Boss attacked! Character energy:', this.character.energy);
   }
 
   addObjectsToMap(objects){

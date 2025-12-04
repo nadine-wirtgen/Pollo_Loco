@@ -10,17 +10,29 @@ class SoundManager {
   chickenDeathSound2 = new Audio('assets/audio/chicken/chicken2.mp3');
   chickenDeathSound3 = new Audio('assets/audio/chicken/chicken3.mp3');
   bossScreamSound = new Audio('assets/audio/boss/chicken_start_scream.mp3');
+  bottleCollectSound = new Audio('assets/audio/boss/collect_bottle/collect_bottle_1.mp3');
+  bottleCollectSound2 = new Audio('assets/audio/boss/collect_bottle/collect_bottle_2.mp3');
+  bottleCollectSound3 = new Audio('assets/audio/boss/collect_bottle/collect_bottle_3.mp3');
   isMuted = false;
+  lastHitSoundTime = 0;
   
   constructor() {
     this.menuMusic.loop = true;
     this.gameMusic.loop = true;
     this.menuMusic.volume = 0.3;
     this.gameMusic.volume = 0.3;
+    this.loadMuteState();
   }
 
-  toggleMute() {
-    this.isMuted = !this.isMuted;
+  loadMuteState() {
+    const savedMuteState = localStorage.getItem('isMuted');
+    if (savedMuteState !== null) {
+      this.isMuted = savedMuteState === 'true';
+      this.applyMuteState();
+    }
+  }
+
+  applyMuteState() {
     this.menuMusic.muted = this.isMuted;
     this.gameMusic.muted = this.isMuted;
     this.jumpSound.muted = this.isMuted;
@@ -32,6 +44,15 @@ class SoundManager {
     this.chickenDeathSound2.muted = this.isMuted;
     this.chickenDeathSound3.muted = this.isMuted;
     this.bossScreamSound.muted = this.isMuted;
+    this.bottleCollectSound.muted = this.isMuted;
+    this.bottleCollectSound2.muted = this.isMuted;
+    this.bottleCollectSound3.muted = this.isMuted;
+  }
+
+  toggleMute() {
+    this.isMuted = !this.isMuted;
+    this.applyMuteState();
+    localStorage.setItem('isMuted', this.isMuted);
     return this.isMuted;
   }
 
@@ -80,6 +101,11 @@ class SoundManager {
 
   playHit() {
     if (!this.isMuted) {
+      const now = Date.now();
+      // Prevent hit sound from playing more than once per 200ms
+      if (now - this.lastHitSoundTime < 200) return;
+      this.lastHitSoundTime = now;
+      
       const hitClone = this.hitSound.cloneNode();
       hitClone.play().catch(e => console.log('Hit sound play failed:', e));
     }
@@ -105,6 +131,15 @@ class SoundManager {
     if (!this.isMuted) {
       this.bossScreamSound.currentTime = 0;
       this.bossScreamSound.play().catch(e => console.log('Boss scream play failed:', e));
+    }
+  }
+
+  playBottleCollect() {
+    if (!this.isMuted) {
+      const randomBottle = Math.floor(Math.random() * 3) + 1;
+      const bottleSound = this[`bottleCollectSound${randomBottle === 1 ? '' : randomBottle}`];
+      bottleSound.currentTime = 0;
+      bottleSound.play().catch(e => console.log('Bottle collect sound play failed:', e));
     }
   }
 

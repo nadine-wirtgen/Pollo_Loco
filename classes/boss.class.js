@@ -6,10 +6,10 @@ class Boss extends MovableObject {
   energy = 100;
   speed = 5;
   offset = {
-    top: 10,
-    bottom: 10,
-    left: 60,
-    right: 30
+    top: 50,
+    bottom: 30,
+    left: 80,
+    right: 50
   };
   bossState = 'idle'; // idle, alert, walking, attacking
   hadFirstContact = false;
@@ -42,6 +42,11 @@ class Boss extends MovableObject {
     'assets/img/4_enemie_boss_chicken/3_attack/G19.png',
     'assets/img/4_enemie_boss_chicken/3_attack/G20.png'
   ];
+  IMAGES_HURT = [
+    'assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
+    'assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
+    'assets/img/4_enemie_boss_chicken/4_hurt/G23.png'
+  ];
   IMAGES_DEAD = [
     'assets/img/4_enemie_boss_chicken/5_dead/G24.png',
     'assets/img/4_enemie_boss_chicken/5_dead/G25.png',
@@ -54,45 +59,54 @@ class Boss extends MovableObject {
     this.loadImages(this.IMAGES_ALERT);
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_ATTACK);
+    this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
     this.animate();
   }
   
   animate(){
-    // Alert animation (slower)
-    setInterval(() => {
-      if(!this.isDead() && this.bossState === 'alert'){
-        this.playAnimation(this.IMAGES_ALERT);
+    setInterval(() => this.animateAlert(), 400);
+    setInterval(() => this.animateDeath(), 60);
+    setInterval(() => this.animateHurt(), 100);
+    setInterval(() => this.animateWalkingAndAttack(), 150);
+  }
+
+  animateAlert(){
+    if(!this.isDead() && this.bossState === 'alert'){
+      this.playAnimation(this.IMAGES_ALERT);
+    }
+  }
+
+  animateDeath(){
+    if(this.isDead()){
+      // Adjust height and y position for dead animation
+      this.height = 300;
+      this.y = 150;
+      
+      // Reset animation index when death animation starts
+      if(!this.deadAnimationStarted){
+        this.currentImageIndex = 0;
+        this.deadAnimationStarted = true;
       }
-    }, 400);
-    
-    // Death animation (faster)
-    setInterval(() => {
-      if(this.isDead()){
-        // Adjust height and y position for dead animation
-        this.height = 300;
-        this.y = 150;
-        
-        // Reset animation index when death animation starts
-        if(!this.deadAnimationStarted){
-          this.currentImageIndex = 0;
-          this.deadAnimationStarted = true;
-        }
-        
-        if (!this.deadAnimationFinished) {
-          this.deadAnimationFinished = this.playAnimationOnce(this.IMAGES_DEAD);
-        }
+      
+      if (!this.deadAnimationFinished) {
+        this.deadAnimationFinished = this.playAnimationOnce(this.IMAGES_DEAD);
       }
-    }, 60);
-    
-    // Walking and attack animations
-    setInterval(() => {
-      if(this.isDead()) return; // No walking/attack animation when dead
-      if(this.bossState === 'walking'){
-        this.playAnimation(this.IMAGES_WALKING);
-      } else if(this.bossState === 'attacking'){
-        this.playAnimation(this.IMAGES_ATTACK);
-      }
-    }, 150);
+    }
+  }
+
+  animateHurt(){
+    if(!this.isDead() && this.isHurt()){
+      this.playAnimation(this.IMAGES_HURT);
+    }
+  }
+
+  animateWalkingAndAttack(){
+    if(this.isDead() || this.isHurt()) return; // No walking/attack animation when dead or hurt
+    if(this.bossState === 'walking'){
+      this.playAnimation(this.IMAGES_WALKING);
+    } else if(this.bossState === 'attacking'){
+      this.playAnimation(this.IMAGES_ATTACK);
+    }
   }
 }

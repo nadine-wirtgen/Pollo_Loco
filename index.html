@@ -54,6 +54,10 @@
       <button onclick="showControls()" class="topBtn">Controls</button>
     </div>
 
+    <button id="muteButtonMenu" onclick="toggleSound(); this.blur();">
+      <img src="assets/icons/sound_on.png" alt="Sound" class="muteIconMenu">
+    </button>
+
     <div id="startScreen">
       <img src="assets/img/9_intro_outro_screens/start/startscreen_1.png" alt="Start Screen">
       <button onclick="startGame()" id="startButton">Start</button>
@@ -93,12 +97,14 @@
       <button onclick="backToMenu()">Back to Menu</button>
     </div>
     
-    <button id="muteButton" onclick="toggleSound(); this.blur();">
-      <img src="assets/icons/sound_on.png" alt="Sound" id="muteIcon">
-    </button>
-
-    <button id="backToMenuButton" onclick="backToMenu()" style="display: none;">
-      Back to Menu
+    <div class="topButtonsGame">
+      <button id="backToMenuButton" onclick="backToMenu()" style="display: none;">
+        Back to Menu
+      </button>
+      <button id="muteButton" onclick="toggleSound(); this.blur();">
+        <img src="assets/icons/sound_on.png" alt="Sound" id="muteIcon">
+      </button>
+    </div>
     </button>
   </div>
 

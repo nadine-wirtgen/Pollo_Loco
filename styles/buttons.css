@@ -1,4 +1,4 @@
-#muteButton {
+#muteButtonMenu {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -6,6 +6,43 @@
   border: none;
   cursor: pointer;
   z-index: 2;
+  padding: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#muteButtonMenu img {
+  width: 30px;
+  height: 30px;
+}
+
+#muteButtonMenu:hover {
+  transform: scale(1.1);
+}
+
+.topButtonsGame {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  gap: 10px;
+  z-index: 2;
+  align-items: center;
+}
+
+#muteButton {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   padding: 0;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
   transition: transform 0.2s;
@@ -25,9 +62,10 @@
 }
 
 #backToMenuButton {
-  position: absolute;
-  top: 10px;
-  right: 50px;
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
   border: none;
@@ -36,7 +74,6 @@
   font-size: 18px;
   font-family: 'zabars', sans-serif;
   cursor: pointer;
-  z-index: 2;
   transition: transform 0.2s, background-color 0.2s;
   pointer-events: auto;
   letter-spacing: 1px;
@@ -49,7 +86,7 @@
 
 .topButtons {
   position: absolute;
-  top: 20px;
+  top: 10px;
   left: 20px;
   display: flex;
   gap: 10px;
@@ -57,7 +94,7 @@
 }
 
 .topBtn {
-  padding: 8px 15px;
+  padding: 6px 12px;
   font-size: 14px;
   font-family: 'zabars', sans-serif;
   background-color: rgba(0, 0, 0, 0.6);
@@ -74,7 +111,7 @@
 @media (min-width: 768px) {
   .topBtn {
     font-size: 18px;
-    padding: 10px 20px;
+    padding: 8px 15px;
   }
 }
 

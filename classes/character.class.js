@@ -199,6 +199,8 @@ class Character extends MovableObject {
       this.playDeathAnimation();
     } else if (this.world.gameWon) {
       return;
+    } else if (this.world.bossAlertActive) {
+      this.playAnimation(this.IMAGES_IDLE);
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.isAboveGround()){

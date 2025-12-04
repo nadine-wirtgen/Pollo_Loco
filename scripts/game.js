@@ -8,8 +8,11 @@ let soundManager = new SoundManager();
  */
 function toggleSound() {
   const isMuted = soundManager.toggleMute();
-  const icon = document.getElementById('muteIcon');
-  icon.src = isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
+  const iconGame = document.getElementById('muteIcon');
+  const iconMenu = document.querySelector('.muteIconMenu');
+  const newSrc = isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
+  if (iconGame) iconGame.src = newSrc;
+  if (iconMenu) iconMenu.src = newSrc;
 }
 
 /**
@@ -56,8 +59,11 @@ window.addEventListener('load', () => {
  * Updates the mute icon based on the current mute state.
  */
 function updateMuteIcon() {
-  const icon = document.getElementById('muteIcon');
-  icon.src = soundManager.isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
+  const iconGame = document.getElementById('muteIcon');
+  const iconMenu = document.querySelector('.muteIconMenu');
+  const newSrc = soundManager.isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
+  if (iconGame) iconGame.src = newSrc;
+  if (iconMenu) iconMenu.src = newSrc;
 }
 
 /**
@@ -69,6 +75,8 @@ function startGame() {
   
   document.getElementById('startScreen').style.display = 'none';
   document.querySelector('.topButtons').style.display = 'none';
+  document.getElementById('muteButtonMenu').style.display = 'none';
+  document.querySelector('.topButtonsGame').style.display = 'flex';
   document.getElementById('mobileControls').classList.add('active');
   document.getElementById('backToMenuButton').style.display = 'block';
   canvas = document.getElementById("canvas");
@@ -91,6 +99,8 @@ function restartGame() {
   document.getElementById('gameOverScreen').style.display = 'none';
   document.getElementById('youWinScreen').style.display = 'none';
   document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('muteButtonMenu').style.display = 'none';
+  document.querySelector('.topButtonsGame').style.display = 'flex';
   document.getElementById('mobileControls').classList.add('active');
   document.getElementById('backToMenuButton').style.display = 'block';
   
@@ -118,6 +128,8 @@ function backToMenu() {
   document.getElementById('youWinScreen').style.display = 'none';
   document.getElementById('startScreen').style.display = 'flex';
   document.querySelector('.topButtons').style.display = 'flex';
+  document.getElementById('muteButtonMenu').style.display = 'flex';
+  document.querySelector('.topButtonsGame').style.display = 'none';
   document.getElementById('mobileControls').classList.remove('active');
   document.getElementById('backToMenuButton').style.display = 'none';
 }

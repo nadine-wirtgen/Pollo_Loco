@@ -45,6 +45,7 @@
   text-decoration: none;
   display: inline-block;
   transition: transform 0.2s, background-color 0.2s;
+  letter-spacing: 1px;
 }
 
 @media (min-width: 768px) {
@@ -70,6 +71,7 @@
   cursor: pointer;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s;
+  letter-spacing: 1px;
 }
 
 #startScreen button:hover, #gameOverScreen button:hover, #youWinScreen button:hover {

@@ -57,6 +57,7 @@
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   font-size: 14px;
+  letter-spacing: 1px;
 }
 
 @media (min-width: 768px) {

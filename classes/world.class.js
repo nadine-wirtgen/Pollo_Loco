@@ -112,6 +112,7 @@ class World {
     }
     if(Date.now() - this.gameOverTime > 1000){
       document.getElementById('gameOverScreen').style.display = 'flex';
+      document.getElementById('backToMenuButton').style.display = 'none';
     }
   }
 
@@ -125,6 +126,7 @@ class World {
     }
     if(Date.now() - this.youWinTime > 1000){
       document.getElementById('youWinScreen').style.display = 'flex';
+      document.getElementById('backToMenuButton').style.display = 'none';
     }
   }
 

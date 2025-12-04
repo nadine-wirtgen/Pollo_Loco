@@ -24,6 +24,29 @@
   transform: scale(1.1);
 }
 
+#backToMenuButton {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 15px;
+  font-size: 18px;
+  font-family: 'zabars', sans-serif;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.2s, background-color 0.2s;
+  pointer-events: auto;
+  letter-spacing: 1px;
+}
+
+#backToMenuButton:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 107, 0, 0.8);
+}
+
 .topButtons {
   position: absolute;
   top: 20px;

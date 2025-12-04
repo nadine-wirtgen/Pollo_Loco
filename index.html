@@ -59,8 +59,8 @@
       <button onclick="startGame()" id="startButton">Start</button>
     </div>
 
-    <div id="controlsModal" style="display: none;">
-      <div class="modalContent">
+    <div id="controlsModal" style="display: none;" onclick="closeControls()">
+      <div class="modalContent" onclick="event.stopPropagation()">
         <span class="closeBtn" onclick="closeControls()">&times;</span>
         <h2>Controls</h2>
         <div class="controlsInfo">
@@ -95,6 +95,10 @@
     
     <button id="muteButton" onclick="toggleSound(); this.blur();">
       <img src="assets/icons/sound_on.png" alt="Sound" id="muteIcon">
+    </button>
+
+    <button id="backToMenuButton" onclick="backToMenu()" style="display: none;">
+      Back to Menu
     </button>
   </div>
 

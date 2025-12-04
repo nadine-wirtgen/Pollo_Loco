@@ -26,15 +26,6 @@ function closeControls() {
   document.getElementById('controlsModal').style.display = 'none';
 }
 
-// Close modal when clicking outside
-document.addEventListener('click', (event) => {
-  const controlsModal = document.getElementById('controlsModal');
-  
-  if (event.target === controlsModal) {
-    closeControls();
-  }
-});
-
 // Start menu music on first user interaction
 document.addEventListener('click', () => {
   if (soundManager.menuMusic.paused && !world) {
@@ -42,17 +33,7 @@ document.addEventListener('click', () => {
   }
 }, { once: false });
 
-// Also try on button hover
 window.addEventListener('load', () => {
-  const startButton = document.getElementById('startButton');
-  if (startButton) {
-    startButton.addEventListener('mouseenter', () => {
-      if (soundManager.menuMusic.paused && !world) {
-        soundManager.startMenuMusic();
-      }
-    }, { once: true });
-  }
-
   // Mobile touch controls
   const bindButton = (id, key) => {
     const btn = document.getElementById(id);
@@ -89,6 +70,7 @@ function startGame() {
   document.getElementById('startScreen').style.display = 'none';
   document.querySelector('.topButtons').style.display = 'none';
   document.getElementById('mobileControls').classList.add('active');
+  document.getElementById('backToMenuButton').style.display = 'block';
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard, soundManager);
 }
@@ -110,6 +92,7 @@ function restartGame() {
   document.getElementById('youWinScreen').style.display = 'none';
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('mobileControls').classList.add('active');
+  document.getElementById('backToMenuButton').style.display = 'block';
   
   // Create new world
   canvas = document.getElementById("canvas");
@@ -136,6 +119,7 @@ function backToMenu() {
   document.getElementById('startScreen').style.display = 'flex';
   document.querySelector('.topButtons').style.display = 'flex';
   document.getElementById('mobileControls').classList.remove('active');
+  document.getElementById('backToMenuButton').style.display = 'none';
 }
 
 window.addEventListener("keydown", (e) => {

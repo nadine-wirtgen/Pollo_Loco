@@ -3,16 +3,25 @@ let world;
 let keyboard = new Keyboard();
 let soundManager = new SoundManager();
 
+/**
+ * Toggles the sound mute state and updates the mute icon.
+ */
 function toggleSound() {
   const isMuted = soundManager.toggleMute();
   const icon = document.getElementById('muteIcon');
   icon.src = isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
 }
 
+/**
+ * Displays the controls modal dialog.
+ */
 function showControls() {
   document.getElementById('controlsModal').style.display = 'flex';
 }
 
+/**
+ * Closes the controls modal dialog.
+ */
 function closeControls() {
   document.getElementById('controlsModal').style.display = 'none';
 }
@@ -62,11 +71,17 @@ window.addEventListener('load', () => {
   updateMuteIcon();
 });
 
+/**
+ * Updates the mute icon based on the current mute state.
+ */
 function updateMuteIcon() {
   const icon = document.getElementById('muteIcon');
   icon.src = soundManager.isMuted ? 'assets/icons/sound_off.png' : 'assets/icons/sound_on.png';
 }
 
+/**
+ * Starts a new game by initializing the world and switching to game mode.
+ */
 function startGame() {
   soundManager.stopMenuMusic();
   soundManager.startGameMusic();
@@ -78,6 +93,9 @@ function startGame() {
   world = new World(canvas, keyboard, soundManager);
 }
 
+/**
+ * Restarts the game by stopping the current world and creating a new one.
+ */
 function restartGame() {
   // Stop old world completely
   if (world) {
@@ -98,6 +116,9 @@ function restartGame() {
   world = new World(canvas, keyboard, soundManager);
 }
 
+/**
+ * Returns to the main menu from the game or end screens.
+ */
 function backToMenu() {
   // Stop old world completely
   if (world) {

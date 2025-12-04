@@ -78,6 +78,9 @@ class Character extends MovableObject {
     right: 10
   }
 
+  /**
+   * Initializes a new character instance with images and animations
+   */
   constructor(){
     super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
     this.loadImages(this.IMAGES_WALKING);
@@ -91,17 +94,29 @@ class Character extends MovableObject {
     this.getReaLFrame();
   }
 
+  /**
+   * Handles character being hit by an enemy
+   * @param {number} damage - Amount of damage to apply (default: 10)
+   */
   hit(damage = 10){
     super.hit(damage);
     this.world.soundManager.playHit();
   }
 
+  /**
+   * Checks if the character is currently in hurt state
+   * @returns {boolean} True if character was hit in the last 0.5 seconds and is not dead
+   */
   isHurt(){
     if(this.isDead()) return false;
     let timepassed = (Date.now() - this.lastHit) / 1000;
     return timepassed < 0.5;
   }
 
+  /**
+   * Checks if the character is dead and initializes death animation
+   * @returns {boolean} True if character's energy is below 20
+   */
   isDead(){
     if(this.energy < 20 && !this.deadAnimationStarted){
       this.deadAnimationStarted = true;
@@ -110,18 +125,27 @@ class Character extends MovableObject {
     return this.energy < 20;
   }
 
+  /**
+   * Starts the character's animation loops for movement and visual animations
+   */
   animate(){
     setInterval(() => this.handleMovement(), 1000 / 60);
     setInterval(() => this.handleAnimations(), 100);
   }
 
+  /**
+   * Processes character movement, keyboard input, sounds, and camera updates
+   */
   handleMovement(){
-    if (this.isDead() || this.world.gameWon) return;
+    if (this.isDead() || this.world.gameWon || this.world.bossAlertActive) return;
     this.handleKeyboardInput();
     this.handleLandingSound();
     this.updateCamera();
   }
 
+  /**
+   * Processes keyboard input for character movement and actions
+   */
   handleKeyboardInput(){
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x + 350) {
       this.moveRight();
@@ -146,6 +170,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Plays landing sound when character touches the ground after being in the air
+   */
   handleLandingSound(){
     if (this.wasAboveGround && !this.isAboveGround()) {
       this.world.soundManager.playLand();
@@ -153,6 +180,9 @@ class Character extends MovableObject {
     this.wasAboveGround = this.isAboveGround();
   }
 
+  /**
+   * Updates the camera position to follow the character
+   */
   updateCamera(){
     if (this.x < this.world.level.level_end_x - 100) {
       this.world.camera_x = -this.x + 100;
@@ -161,6 +191,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Manages character animations based on current state (dead, hurt, jumping, idle, walking)
+   */
   handleAnimations(){
     if(this.isDead()){
       this.playDeathAnimation();
@@ -175,12 +208,18 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Plays the death animation sequence once
+   */
   playDeathAnimation(){
     if (!this.deadAnimationFinished) {
       this.deadAnimationFinished = this.playAnimationOnce(this.IMAGES_DEAD);
     }
   }
 
+  /**
+   * Manages idle and sleep animations based on inactivity time
+   */
   handleIdleAnimations(){
     let idleTime = (Date.now() - this.lastMovement) / 1000;
     
@@ -195,6 +234,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Plays the sleep animation and sound when character is idle for too long
+   */
   playSleepAnimation(){
     if (!this.isSnoozing) {
       this.world.soundManager.playSnooze();
@@ -203,6 +245,9 @@ class Character extends MovableObject {
     this.playAnimation(this.IMAGES_SLEEP);
   }
 
+  /**
+   * Stops the sleep animation and sound when character becomes active
+   */
   stopSleepAnimation(){
     if (this.isSnoozing) {
       this.world.soundManager.stopSnooze();

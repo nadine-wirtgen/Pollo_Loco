@@ -7,6 +7,9 @@ class MovableObject extends DrawableObject{
   energy = 100;
   lastHit = 0;
 
+  /**
+   * Applies gravity physics to the object
+   */
   applyGravity(){
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -16,6 +19,10 @@ class MovableObject extends DrawableObject{
     }, 1000 / 60);
   }
 
+  /**
+   * Checks if the object is above ground level
+   * @returns {boolean} True if object is above ground (except for throwable objects)
+   */
   isAboveGround(){
     if(this instanceof ThrowableObject){
       return true;
@@ -24,6 +31,9 @@ class MovableObject extends DrawableObject{
     }
   }
 
+  /**
+   * Calculates the real collision frame considering offsets
+   */
   getReaLFrame(){
     this.realX = this.x + this.offset.left;
     this.realY = this.y + this.offset.top;
@@ -31,6 +41,11 @@ class MovableObject extends DrawableObject{
     this.realHeight = this.height - this.offset.top - this.offset.bottom;
   }
 
+  /**
+   * Checks if this object is colliding with another object
+   * @param {MovableObject} movableObject - The object to check collision with
+   * @returns {boolean} True if objects are colliding
+   */
   isColliding(movableObject){
     return this.realX + this.realWidth > movableObject.realX &&
             this.realX < movableObject.realX + movableObject.realWidth &&
@@ -38,6 +53,10 @@ class MovableObject extends DrawableObject{
             this.realY < movableObject.realY + movableObject.realHeight;
   }
 
+  /**
+   * Applies damage to the object and records hit time
+   * @param {number} damage - Amount of damage to apply (default: 10)
+   */
   hit(damage = 10){
     this.energy -= damage;
     if (this.energy < 0) {
@@ -47,16 +66,28 @@ class MovableObject extends DrawableObject{
     this.lastHit = Date.now();
   }
 
+  /**
+   * Checks if the object is in hurt state
+   * @returns {boolean} True if object was hit in the last 0.5 seconds
+   */
   isHurt(){
     // time passed since last hit in seconds
     let timepassed = (Date.now() - this.lastHit) / 1000;
     return timepassed < 0.5;
   }
 
+  /**
+   * Checks if the object is dead
+   * @returns {boolean} True if energy is zero or below
+   */
   isDead(){
     return this.energy <= 0;
   }
 
+  /**
+   * Plays a looping animation from an array of images
+   * @param {Array<string>} images - Array of image paths for the animation
+   */
   playAnimation(images){
     let i = this.currentImageIndex % images.length;
     let path = images[i];
@@ -64,6 +95,11 @@ class MovableObject extends DrawableObject{
     this.currentImageIndex++;
   }
 
+  /**
+   * Plays an animation sequence once without looping
+   * @param {Array<string>} images - Array of image paths for the animation
+   * @returns {boolean} True if animation is finished, false otherwise
+   */
   playAnimationOnce(images){
     if (this.currentImageIndex < images.length) {
       let path = images[this.currentImageIndex];
@@ -74,14 +110,23 @@ class MovableObject extends DrawableObject{
     return true; // finished
   }
 
+  /**
+   * Moves the object to the right by its speed
+   */
   moveRight(){
     this.x += this.speed;
   }
   
+  /**
+   * Moves the object to the left by its speed
+   */
   moveLeft(){
       this.x -= this.speed;
   }
 
+  /**
+   * Makes the object jump by setting upward vertical speed
+   */
   jump(){
     this.speedY = 30;
   }

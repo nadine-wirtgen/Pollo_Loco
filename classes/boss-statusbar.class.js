@@ -1,4 +1,7 @@
 class BossBar extends StatusBar {
+  /**
+   * Initializes the boss health status bar
+   */
   constructor() {
     super([
       'assets/img/7_statusbars/2_statusbar_endboss/orange/orange0.png',

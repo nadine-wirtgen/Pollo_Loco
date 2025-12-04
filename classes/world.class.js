@@ -21,8 +21,15 @@ class World {
   runInterval = null;
   animationFrameId = null;
   stopped = false;
+  bossAlertActive = false;
   soundManager;
 
+  /**
+   * Initializes the game world with canvas, keyboard, and sound manager
+   * @param {HTMLCanvasElement} canvas - The game canvas element
+   * @param {Keyboard} keyboard - The keyboard input handler
+   * @param {SoundManager} soundManager - The sound manager instance
+   */
   constructor(canvas, keyboard, soundManager) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
@@ -37,6 +44,9 @@ class World {
   }
   
 
+  /**
+   * Main draw loop that renders all game objects to the canvas
+   */
   draw() {
     this.clearCanvas();
     this.drawGameWorld();
@@ -45,10 +55,16 @@ class World {
     this.requestNextFrame();
   }
 
+  /**
+   * Clears the entire canvas for the next frame
+   */
   clearCanvas(){
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
+  /**
+   * Draws all game world objects with camera translation
+   */
   drawGameWorld(){
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
@@ -61,6 +77,9 @@ class World {
     this.ctx.translate(-this.camera_x, 0);
   }
 
+  /**
+   * Draws fixed UI elements (status bars) that don't move with the camera
+   */
   drawFixedObjects(){
     this.addToMap(this.healthBar);
     this.addToMap(this.bottleBar);
@@ -70,6 +89,9 @@ class World {
     }
   }
 
+  /**
+   * Manages game over and win screen displays
+   */
   handleGameScreens(){
     if(this.character.isDead()){
       this.showGameOverScreen();
@@ -81,6 +103,9 @@ class World {
     }
   }
 
+  /**
+   * Shows the game over screen after a delay when character dies
+   */
   showGameOverScreen(){
     if(this.gameOverTime === null){
       this.gameOverTime = Date.now();
@@ -90,6 +115,9 @@ class World {
     }
   }
 
+  /**
+   * Shows the victory screen after a delay when boss is defeated
+   */
   showYouWinScreen(){
     if(this.youWinTime === null){
       this.youWinTime = Date.now();
@@ -100,20 +128,32 @@ class World {
     }
   }
 
+  /**
+   * Requests the next animation frame if the game is not stopped
+   */
   requestNextFrame(){
     if (!this.stopped) {
       this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
   }
 
+  /**
+   * Sets the world reference in the character object
+   */
   setWorld() {
     this.character.world = this;
   }
 
+  /**
+   * Starts the main game loop interval
+   */
   run() {
     this.runInterval = setInterval(() => this.runGameLoop(), 1000 / 60);
   }
 
+  /**
+   * Main game loop that checks collisions, throws, and updates
+   */
   runGameLoop(){
     if(this.isGameFinished()) return;
     this.checkCollisions();
@@ -124,6 +164,10 @@ class World {
     this.updateBoss();
   }
 
+  /**
+   * Checks if the game has ended (player dead or boss defeated)
+   * @returns {boolean} True if game is over or won
+   */
   isGameFinished(){
     let boss = this.level.enemies.find(e => e instanceof Boss);
     let gameOver = this.character.isDead() && this.gameOverTime && (Date.now() - this.gameOverTime > 1000);
@@ -131,6 +175,9 @@ class World {
     return gameOver || gameWon;
   }
 
+  /**
+   * Stops all game loops and animations
+   */
   stop() {
     this.stopped = true;
     if (this.runInterval) {
@@ -141,8 +188,11 @@ class World {
     }
   }
 
+  /**
+   * Checks if player wants to throw a bottle and creates throwable object
+   */
   checkThrowObjects(){
-    if(this.keyboard.D && !this.character.isDead() && this.bottleCount > 0 && (Date.now() - this.lastThrow) > 500){
+    if(this.keyboard.D && !this.character.isDead() && !this.bossAlertActive && this.bottleCount > 0 && (Date.now() - this.lastThrow) > 500){
       let offsetX = this.character.otherDirection ? -30 : 60;
       let bottle = new ThrowableObject(this.character.x + offsetX, this.character.y + 50);
       bottle.otherDirection = this.character.otherDirection;
@@ -154,6 +204,9 @@ class World {
     }
   }
 
+  /**
+   * Checks for collisions between character and enemies
+   */
   checkCollisions(){
     if(this.character.isDead()) return; // Stop collision checks when character is dead
     this.character.getReaLFrame();
@@ -165,6 +218,10 @@ class World {
     });
   }
 
+  /**
+   * Handles collision between character and an enemy
+   * @param {MovableObject} enemy - The enemy that collided with the character
+   */
   handleEnemyCollision(enemy){
     if (this.isChicken(enemy) && this.isJumpingOnEnemy()) {
       this.killChickenByJump(enemy);
@@ -174,26 +231,45 @@ class World {
     // Boss damage is handled in updateBoss() during attack animation
   }
 
+  /**
+   * Checks if the enemy is a chicken type
+   * @param {MovableObject} enemy - The enemy to check
+   * @returns {boolean} True if enemy is a Chicken or SmallChicken
+   */
   isChicken(enemy){
     return enemy instanceof Chicken || enemy instanceof SmallChicken;
   }
 
+  /**
+   * Checks if character is jumping on top of an enemy
+   * @returns {boolean} True if character is in the air and falling down
+   */
   isJumpingOnEnemy(){
     return this.character.isAboveGround() && this.character.speedY < 0;
   }
 
+  /**
+   * Kills a chicken enemy when jumped on
+   * @param {MovableObject} enemy - The chicken to kill
+   */
   killChickenByJump(enemy){
     enemy.energy = 0;
     this.soundManager.playChickenDeath();
     console.log('Jumped on chicken!');
   }
 
+  /**
+   * Applies damage to character when hit by a chicken
+   */
   damageCharacterByChicken(){
     this.character.hit(10);
     this.healthBar.setPercentage(this.character.energy);
     console.log('Collision with chicken detected!', this.character.energy);
   }
 
+  /**
+   * Checks for collisions between thrown bottles and enemies
+   */
   checkBottleCollisions(){
     this.throwableObjects.forEach((bottle, bottleIndex) => {
       bottle.getReaLFrame();
@@ -215,6 +291,9 @@ class World {
     });
   }
 
+  /**
+   * Checks if character collects a bottle from the ground
+   */
   checkBottleCollection(){
     if(this.bottleCount >= 5) return;
     this.checkCollectionFor(this.level.bottles, (index) => {
@@ -227,6 +306,9 @@ class World {
     });
   }
 
+  /**
+   * Checks if character collects a coin
+   */
   checkCoinCollection(){
     this.checkCollectionFor(this.level.coins, (index) => {
       this.level.coins.splice(index, 1);
@@ -238,6 +320,11 @@ class World {
     });
   }
 
+  /**
+   * Generic method to check character collision with collectible items
+   * @param {Array} items - Array of collectible items to check
+   * @param {Function} onCollect - Callback function when item is collected
+   */
   checkCollectionFor(items, onCollect){
     this.character.getReaLFrame();
     items.forEach((item, index) => {
@@ -248,6 +335,9 @@ class World {
     });
   }
 
+  /**
+   * Updates boss behavior and AI
+   */
   updateBoss(){
     let boss = this.level.enemies.find(e => e instanceof Boss);
     if(!boss || boss.isDead()) return;
@@ -262,42 +352,65 @@ class World {
     this.handleBossWalking(boss, distance);
   }
 
+  /**
+   * Handles the first encounter with the boss
+   * @param {Boss} boss - The boss enemy
+   * @param {number} distance - Distance between character and boss
+   */
   handleBossFirstContact(boss, distance){
-    if(distance < 500 && !boss.hadFirstContact){
+    if(distance < 400 && !boss.hadFirstContact){
       boss.bossState = 'alert';
       boss.hadFirstContact = true;
+      this.bossAlertActive = true;
       this.playBossScreamDelayed();
       this.startBossWalkingDelayed(boss);
     }
   }
 
+  /**
+   * Plays boss scream sound after a 2 second delay
+   */
   playBossScreamDelayed(){
     setTimeout(() => {
       this.soundManager.playBossScream();
-    }, 2000);
+    }, 2200);
   }
 
+  /**
+   * Starts boss walking animation after a delay and shows boss health bar
+   * @param {Boss} boss - The boss enemy
+   */
   startBossWalkingDelayed(boss){
     setTimeout(() => {
       boss.bossState = 'walking';
       this.showBossBar = true;
+      this.bossAlertActive = false;
     }, 3200);
   }
 
+  /**
+   * Handles boss movement and attack behavior during walking state
+   * @param {Boss} boss - The boss enemy
+   * @param {number} distance - Distance between character and boss
+   */
   handleBossWalking(boss, distance){
     if(boss.bossState !== 'walking') return;
     
-    let attackDistance = boss.x < this.character.x ? 120 : 40;
+    let attackDistance = boss.x < this.character.x ? 200 : 80;
     
     if(distance > attackDistance){
       this.moveBossTowardsCharacter(boss);
     }
     
     if(distance <= attackDistance && !this.character.isDead()){
-      this.startBossAttack(boss, attackDistance);
+      this.startBossAttack(boss);
     }
   }
 
+  /**
+   * Moves the boss towards the character's position
+   * @param {Boss} boss - The boss enemy
+   */
   moveBossTowardsCharacter(boss){
     if(this.character.x < boss.x){
       boss.x -= boss.speed;
@@ -308,19 +421,28 @@ class World {
     }
   }
 
-  startBossAttack(boss, attackDistance){
+  /**
+   * Initiates a boss attack sequence
+   * @param {Boss} boss - The boss enemy
+   */
+  startBossAttack(boss){
     boss.bossState = 'attacking';
     boss.currentImageIndex = 0;
     setTimeout(() => {
-      this.executeBossAttack(boss, attackDistance);
+      this.executeBossAttack(boss);
     }, 1050);
   }
 
-  executeBossAttack(boss, attackDistance){
+  /**
+   * Executes the boss attack and applies damage if character is in range
+   * @param {Boss} boss - The boss enemy
+   */
+  executeBossAttack(boss){
     if(this.character.isDead()) return;
     
+    let hitRange = boss.x < this.character.x ? 250 : 250;
     let endDistance = Math.abs(this.character.x - boss.x);
-    if(endDistance <= attackDistance && !this.character.isHurt() && !this.character.isDead()){
+    if(endDistance <= hitRange && !this.character.isHurt() && !this.character.isDead()){
       this.damageCharacterByBoss();
     }
     if(!this.character.isDead()){
@@ -328,6 +450,9 @@ class World {
     }
   }
 
+  /**
+   * Applies damage to character when hit by boss attack
+   */
   damageCharacterByBoss(){
     this.character.energy -= 20;
     if(this.character.energy < 0) this.character.energy = 0;
@@ -337,12 +462,20 @@ class World {
     console.log('Boss attacked! Character energy:', this.character.energy);
   }
 
+  /**
+   * Adds an array of objects to the game map
+   * @param {Array} objects - Array of game objects to add
+   */
   addObjectsToMap(objects){
     objects.forEach(object => {
       this.addToMap(object);
     });
   }
 
+  /**
+   * Adds a single object to the map with proper image orientation
+   * @param {MovableObject} movableImage - The object to draw
+   */
   addToMap(movableImage) {
     if (movableImage.otherDirection) {
       this.flipImage(movableImage);
@@ -356,6 +489,10 @@ class World {
     }
   }
 
+  /**
+   * Flips the canvas context to mirror the image horizontally
+   * @param {MovableObject} movableImage - The object to flip
+   */
   flipImage(movableImage) {
     this.ctx.save();
     this.ctx.translate(movableImage.x + movableImage.width / 2, 0);
@@ -363,6 +500,9 @@ class World {
     this.ctx.translate(-(movableImage.x + movableImage.width / 2), 0);
   }
 
+  /**
+   * Restores the canvas context after flipping
+   */
   flipImageBack() {
     this.ctx.restore();
   }

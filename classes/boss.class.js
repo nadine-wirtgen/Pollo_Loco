@@ -54,6 +54,9 @@ class Boss extends MovableObject {
   ];
   deadAnimationFinished = false;
 
+  /**
+   * Initializes the boss enemy with images and animations
+   */
   constructor(){
     super().loadImage(this.IMAGES_ALERT[0]);
     this.loadImages(this.IMAGES_ALERT);
@@ -64,6 +67,9 @@ class Boss extends MovableObject {
     this.animate();
   }
   
+  /**
+   * Starts all boss animation intervals
+   */
   animate(){
     setInterval(() => this.animateAlert(), 400);
     setInterval(() => this.animateDeath(), 60);
@@ -71,12 +77,18 @@ class Boss extends MovableObject {
     setInterval(() => this.animateWalkingAndAttack(), 150);
   }
 
+  /**
+   * Plays the alert animation when boss is in alert state
+   */
   animateAlert(){
     if(!this.isDead() && this.bossState === 'alert'){
       this.playAnimation(this.IMAGES_ALERT);
     }
   }
 
+  /**
+   * Plays the death animation when boss is dead
+   */
   animateDeath(){
     if(this.isDead()){
       // Adjust height and y position for dead animation
@@ -95,12 +107,18 @@ class Boss extends MovableObject {
     }
   }
 
+  /**
+   * Plays the hurt animation when boss is hurt
+   */
   animateHurt(){
     if(!this.isDead() && this.isHurt()){
       this.playAnimation(this.IMAGES_HURT);
     }
   }
 
+  /**
+   * Plays walking and attack animations based on boss state
+   */
   animateWalkingAndAttack(){
     if(this.isDead() || this.isHurt()) return; // No walking/attack animation when dead or hurt
     if(this.bossState === 'walking'){

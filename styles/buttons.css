@@ -47,6 +47,13 @@
   transition: transform 0.2s, background-color 0.2s;
 }
 
+@media (min-width: 768px) {
+  .topBtn {
+    font-size: 18px;
+    padding: 10px 20px;
+  }
+}
+
 .topBtn:hover {
   transform: scale(1.05);
   background-color: rgba(255, 107, 0, 0.8);

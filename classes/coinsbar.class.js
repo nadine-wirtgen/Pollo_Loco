@@ -1,4 +1,7 @@
 class CoinsBar extends StatusBar{
+  /**
+   * Initializes the coin collection status bar
+   */
   constructor(){
     super([
       'assets/img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png',

@@ -1,5 +1,8 @@
 
 class HealthBar extends StatusBar {
+  /**
+   * Initializes the health status bar
+   */
   constructor() {
     super([
       'assets/img/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',

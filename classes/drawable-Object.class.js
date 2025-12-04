@@ -8,17 +8,29 @@ class DrawableObject{
   currentImageIndex = 0;
 
   
+  /**
+   * Loads a single image from the specified path
+   * @param {string} path - Path to the image file
+   */
   loadImage(path){
     this.img = new Image();
     this.img.src = path;
   }
 
+  /**
+   * Draws the object's image on the canvas
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+   */
   draw(ctx){
     if(this.img)
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
 
+  /**
+   * Draws a debug frame around the object (for Character and Chicken only)
+   * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+   */
   drawFrame(ctx){
   //Macht rote kasten drumherum
   if(this instanceof Character || this instanceof Chicken){  //kasten werden nur bei character und chicken gezeichnet
@@ -31,6 +43,10 @@ class DrawableObject{
   //end
   }
 
+  /**
+   * Loads multiple images and caches them
+   * @param {Array<string>} arr - Array of image paths to load
+   */
   loadImages(arr){
     arr.forEach((path) => {
       let img = new Image();

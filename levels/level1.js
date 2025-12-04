@@ -1,3 +1,7 @@
+/**
+ * Initializes and returns the first game level with all enemies, objects, and collectibles
+ * @returns {Level} The initialized level 1
+ */
 function initLevel1() {
   return new Level(
     [

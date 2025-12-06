@@ -32,15 +32,13 @@ class DrawableObject{
    * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
    */
   drawFrame(ctx){
-  //Macht rote kasten drumherum
-  if(this instanceof Character || this instanceof Chicken){  //kasten werden nur bei character und chicken gezeichnet
-    ctx.beginPath();
-    ctx.lineWidth = '5';
-    ctx.strokeStyle = 'red';
-    ctx.rect(this.x, this.y, this.width, this.height);
-    ctx.stroke();
-  }
-  //end
+    if(this instanceof Character || this instanceof Chicken){ 
+      ctx.beginPath();
+      ctx.lineWidth = '5';
+      ctx.strokeStyle = 'red';
+      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
+    }
   }
 
   /**

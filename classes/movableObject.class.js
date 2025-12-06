@@ -62,7 +62,6 @@ class MovableObject extends DrawableObject{
     if (this.energy < 0) {
       this.energy = 0;
     }
-    // record time of this hit (ms)
     this.lastHit = Date.now();
   }
 
@@ -71,7 +70,6 @@ class MovableObject extends DrawableObject{
    * @returns {boolean} True if object was hit in the last 0.5 seconds
    */
   isHurt(){
-    // time passed since last hit in seconds
     let timepassed = (Date.now() - this.lastHit) / 1000;
     return timepassed < 0.5;
   }
@@ -105,9 +103,9 @@ class MovableObject extends DrawableObject{
       let path = images[this.currentImageIndex];
       this.img = this.imageCache[path];
       this.currentImageIndex++;
-      return false; // not finished
+      return false;
     }
-    return true; // finished
+    return true;
   }
 
   /**

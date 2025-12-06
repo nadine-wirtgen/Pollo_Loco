@@ -118,6 +118,16 @@
   margin-left: 40px;
 }
 
+@media (orientation: landscape) and (max-height: 500px) {
+  .controlsRight {
+    margin-right: 36px;
+  }
+
+  .controlsLeft {
+    margin-left: 0px;
+  }
+}
+
 .controlBtn {
   width: 60px;
   height: 60px;

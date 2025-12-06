@@ -88,14 +88,14 @@ class Boss extends MovableObject {
 
   /**
    * Plays the death animation when boss is dead
+   * Adjust height and y position for dead animation
+   * Resets animation index when death animation starts
    */
   animateDeath(){
-    if(this.isDead()){
-      // Adjust height and y position for dead animation
+    if(this.isDead()){ 
       this.height = 300;
       this.y = 150;
       
-      // Reset animation index when death animation starts
       if(!this.deadAnimationStarted){
         this.currentImageIndex = 0;
         this.deadAnimationStarted = true;
@@ -118,9 +118,10 @@ class Boss extends MovableObject {
 
   /**
    * Plays walking and attack animations based on boss state
+   * No walking/attack animation when dead or hurt
    */
   animateWalkingAndAttack(){
-    if(this.isDead() || this.isHurt()) return; // No walking/attack animation when dead or hurt
+    if(this.isDead() || this.isHurt()) return;
     if(this.bossState === 'walking'){
       this.playAnimation(this.IMAGES_WALKING);
     } else if(this.bossState === 'attacking'){

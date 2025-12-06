@@ -23,6 +23,7 @@ class World {
   stopped = false;
   bossAlertActive = false;
   soundManager;
+  collisionManager;
 
   /**
    * Initializes the game world with canvas, keyboard, and sound manager
@@ -35,6 +36,7 @@ class World {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.soundManager = soundManager;
+    this.collisionManager = new CollisionManager(this);
     this.totalCoins = this.level.coins.length;
     this.bottleBar.setPercentage(0);
     this.coinsBar.setPercentage(0);
@@ -43,7 +45,6 @@ class World {
     this.run();
   }
   
-
   /**
    * Main draw loop that renders all game objects to the canvas
    */
@@ -109,6 +110,7 @@ class World {
   showGameOverScreen(){
     if(this.gameOverTime === null){
       this.gameOverTime = Date.now();
+      this.soundManager.playLose();
     }
     if(Date.now() - this.gameOverTime > 1000){
       document.getElementById('gameOverScreen').style.display = 'flex';
@@ -123,6 +125,7 @@ class World {
     if(this.youWinTime === null){
       this.youWinTime = Date.now();
       this.gameWon = true;
+      this.soundManager.playWin();
     }
     if(Date.now() - this.youWinTime > 1000){
       document.getElementById('youWinScreen').style.display = 'flex';
@@ -158,11 +161,11 @@ class World {
    */
   runGameLoop(){
     if(this.isGameFinished()) return;
-    this.checkCollisions();
+    this.collisionManager.checkCollisions();
     this.checkThrowObjects();
-    this.checkBottleCollisions();
-    this.checkBottleCollection();
-    this.checkCoinCollection();
+    this.collisionManager.checkBottleCollisions();
+    this.collisionManager.checkBottleCollection();
+    this.collisionManager.checkCoinCollection();
     this.updateBoss();
   }
 
@@ -203,131 +206,6 @@ class World {
       this.bottleBar.setPercentage(this.bottleCount * 20);
       this.lastThrow = Date.now();
     }
-  }
-
-  /**
-   * Checks for collisions between character and enemies
-   */
-  checkCollisions(){
-    if(this.character.isDead()) return; // Stop collision checks when character is dead
-    this.character.getReaLFrame();
-    this.level.enemies.forEach((enemy) => {
-      enemy.getReaLFrame();
-      if (this.character.isColliding(enemy) && !enemy.isDead()) {
-        this.handleEnemyCollision(enemy);
-      }
-    });
-  }
-
-  /**
-   * Handles collision between character and an enemy
-   * @param {MovableObject} enemy - The enemy that collided with the character
-   */
-  handleEnemyCollision(enemy){
-    if (this.isChicken(enemy) && this.isJumpingOnEnemy()) {
-      this.killChickenByJump(enemy);
-    } else if (this.isChicken(enemy) && !this.character.isHurt()) {
-      this.damageCharacterByChicken();
-    }
-    // Boss damage is handled in updateBoss() during attack animation
-  }
-
-  /**
-   * Checks if the enemy is a chicken type
-   * @param {MovableObject} enemy - The enemy to check
-   * @returns {boolean} True if enemy is a Chicken or SmallChicken
-   */
-  isChicken(enemy){
-    return enemy instanceof Chicken || enemy instanceof SmallChicken;
-  }
-
-  /**
-   * Checks if character is jumping on top of an enemy
-   * @returns {boolean} True if character is in the air and falling down
-   */
-  isJumpingOnEnemy(){
-    return this.character.isAboveGround() && this.character.speedY < 0;
-  }
-
-  /**
-   * Kills a chicken enemy when jumped on
-   * @param {MovableObject} enemy - The chicken to kill
-   */
-  killChickenByJump(enemy){
-    enemy.energy = 0;
-    this.soundManager.playChickenDeath();
-  }
-
-  /**
-   * Applies damage to character when hit by a chicken
-   */
-  damageCharacterByChicken(){
-    this.character.hit(10);
-    this.healthBar.setPercentage(this.character.energy);
-  }
-
-  /**
-   * Checks for collisions between thrown bottles and enemies
-   */
-  checkBottleCollisions(){
-    this.throwableObjects.forEach((bottle, bottleIndex) => {
-      bottle.getReaLFrame();
-      this.level.enemies.forEach((enemy) => {
-        enemy.getReaLFrame();
-        if (bottle.isColliding(enemy) && !enemy.isDead()) {
-          if(enemy instanceof Boss){
-            enemy.hit(20);
-            this.bossBar.setPercentage(enemy.energy);
-            this.soundManager.playBossScream();
-          } else {
-            enemy.energy = 0;
-          }
-          this.throwableObjects.splice(bottleIndex, 1);
-        }
-      });
-    });
-  }
-
-  /**
-   * Checks if character collects a bottle from the ground
-   */
-  checkBottleCollection(){
-    if(this.bottleCount >= 5) return;
-    this.checkCollectionFor(this.level.bottles, (index) => {
-      this.level.bottles.splice(index, 1);
-      this.bottleCount++;
-      this.bottleBar.setPercentage(this.bottleCount * 20);
-      this.level.bottles.push(new BottleGround()); // Respawn
-      this.soundManager.playBottleCollect();
-    });
-  }
-
-  /**
-   * Checks if character collects a coin
-   */
-  checkCoinCollection(){
-    this.checkCollectionFor(this.level.coins, (index) => {
-      this.level.coins.splice(index, 1);
-      this.coinCount++;
-      const percentage = Math.round((this.coinCount / this.totalCoins) * 100);
-      this.coinsBar.setPercentage(percentage);
-      this.soundManager.playCoin();
-    });
-  }
-
-  /**
-   * Generic method to check character collision with collectible items
-   * @param {Array} items - Array of collectible items to check
-   * @param {Function} onCollect - Callback function when item is collected
-   */
-  checkCollectionFor(items, onCollect){
-    this.character.getReaLFrame();
-    items.forEach((item, index) => {
-      item.getReaLFrame();
-      if (this.character.isColliding(item)) {
-        onCollect(index);
-      }
-    });
   }
 
   /**
@@ -438,22 +316,11 @@ class World {
     let hitRange = boss.x < this.character.x ? 250 : 250;
     let endDistance = Math.abs(this.character.x - boss.x);
     if(endDistance <= hitRange && !this.character.isHurt() && !this.character.isDead()){
-      this.damageCharacterByBoss();
+      this.collisionManager.damageCharacterByBoss();
     }
     if(!this.character.isDead()){
       boss.bossState = 'walking';
     }
-  }
-
-  /**
-   * Applies damage to character when hit by boss attack
-   */
-  damageCharacterByBoss(){
-    this.character.energy -= 20;
-    if(this.character.energy < 0) this.character.energy = 0;
-    this.healthBar.setPercentage(this.character.energy);
-    this.character.lastHit = Date.now();
-    this.soundManager.playHit();
   }
 
   /**

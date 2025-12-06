@@ -1,6 +1,8 @@
 class SoundManager {
   menuMusic = new Audio('assets/audio/music/menu_music.mp3');
   gameMusic = new Audio('assets/audio/music/game_music.mp3');
+  winSound = new Audio('assets/audio/win_lose/win.mp3');
+  loseSound = new Audio('assets/audio/win_lose/lose.mp3');
   jumpSound = new Audio('assets/audio/character/character_jump.mp3');
   landSound = new Audio('assets/audio/character/character_on_ground.mp3');
   snoozeSound = new Audio('assets/audio/character/character_snooze.mp3');
@@ -44,6 +46,8 @@ class SoundManager {
   applyMuteState() {
     this.menuMusic.muted = this.isMuted;
     this.gameMusic.muted = this.isMuted;
+    this.winSound.muted = this.isMuted;
+    this.loseSound.muted = this.isMuted;
     this.jumpSound.muted = this.isMuted;
     this.landSound.muted = this.isMuted;
     this.snoozeSound.muted = this.isMuted;
@@ -142,7 +146,6 @@ class SoundManager {
   playHit() {
     if (!this.isMuted) {
       const now = Date.now();
-      // Prevent hit sound from playing more than once per 200ms
       if (now - this.lastHitSoundTime < 200) return;
       this.lastHitSoundTime = now;
       
@@ -192,6 +195,26 @@ class SoundManager {
       const bottleSound = this[`bottleCollectSound${randomBottle === 1 ? '' : randomBottle}`];
       bottleSound.currentTime = 0;
       bottleSound.play().catch(e => {});
+    }
+  }
+
+  /**
+   * Plays the win sound effect
+   */
+  playWin() {
+    if (!this.isMuted) {
+      this.winSound.currentTime = 0;
+      this.winSound.play().catch(e => {});
+    }
+  }
+
+  /**
+   * Plays the lose sound effect
+   */
+  playLose() {
+    if (!this.isMuted) {
+      this.loseSound.currentTime = 0;
+      this.loseSound.play().catch(e => {});
     }
   }
 

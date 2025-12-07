@@ -37,23 +37,32 @@ document.addEventListener('click', () => {
 }, { once: false });
 
 window.addEventListener('load', () => {
-  // Mobile touch controls
-  const bindButton = (id, key) => {
-    const btn = document.getElementById(id);
-    btn.addEventListener('touchstart', (e) => { e.preventDefault(); keyboard[key] = true; });
-    btn.addEventListener('touchend', (e) => { e.preventDefault(); keyboard[key] = false; });
-    btn.addEventListener('mousedown', (e) => { e.preventDefault(); keyboard[key] = true; });
-    btn.addEventListener('mouseup', (e) => { e.preventDefault(); keyboard[key] = false; });
-  };
-
-  bindButton('jumpBtn', 'SPACE');
-  bindButton('throwBtn', 'D');
-  bindButton('leftBtn', 'LEFT');
-  bindButton('rightBtn', 'RIGHT');
-
-  // Update mute icon on page load
+  initMobileControls();
   updateMuteIcon();
 });
+
+/**
+ * Initializes mobile control buttons with touch and mouse events
+ */
+function initMobileControls() {
+  bindControlButton('jumpBtn', 'SPACE');
+  bindControlButton('throwBtn', 'D');
+  bindControlButton('leftBtn', 'LEFT');
+  bindControlButton('rightBtn', 'RIGHT');
+}
+
+/**
+ * Binds touch and mouse events to a control button
+ * @param {string} id - The button element ID
+ * @param {string} key - The keyboard key to bind to
+ */
+function bindControlButton(id, key) {
+  const btn = document.getElementById(id);
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); keyboard[key] = true; });
+  btn.addEventListener('touchend', (e) => { e.preventDefault(); keyboard[key] = false; });
+  btn.addEventListener('mousedown', (e) => { e.preventDefault(); keyboard[key] = true; });
+  btn.addEventListener('mouseup', (e) => { e.preventDefault(); keyboard[key] = false; });
+}
 
 /**
  * Updates the mute icon based on the current mute state.

@@ -6,7 +6,6 @@ class DrawableObject{
   width = 60;
   imageCache = {};
   currentImageIndex = 0;
-
   
   /**
    * Loads a single image from the specified path
@@ -25,7 +24,6 @@ class DrawableObject{
     if(this.img)
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
-
 
   /**
    * Draws a debug frame around the object (for Character and Chicken only)

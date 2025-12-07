@@ -3,7 +3,6 @@ class Coin extends CollectableItem {
     'assets/img/8_coin/coin_1.png',
     'assets/img/8_coin/coin_2.png'
   ];
-
   offset = {
     top: 30,
     bottom: 30,

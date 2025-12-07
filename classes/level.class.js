@@ -5,6 +5,7 @@ class Level {
   bottles;
   coins;
   level_end_x = 3600;
+  
   /**
    * Initializes a game level with all its objects
    * @param {Array} enemies - Array of enemy objects

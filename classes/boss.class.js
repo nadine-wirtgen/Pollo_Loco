@@ -11,7 +11,7 @@ class Boss extends MovableObject {
     left: 80,
     right: 50
   };
-  bossState = 'idle'; // idle, alert, walking, attacking
+  bossState = 'idle';
   hadFirstContact = false;
   attackAnimationIndex = 0;
   deadAnimationFinished = false;

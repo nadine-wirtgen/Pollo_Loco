@@ -4,6 +4,13 @@ class Coin extends CollectableItem {
     'assets/img/8_coin/coin_2.png'
   ];
 
+  offset = {
+    top: 30,
+    bottom: 30,
+    left: 30,
+    right: 30
+  };
+
   /**
    * Initializes a new coin at a random position
    */

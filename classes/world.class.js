@@ -343,7 +343,6 @@ class World {
     }
 
     movableImage.draw(this.ctx);
-    // movableImage.drawFrame(this.ctx);
 
     if (movableImage.otherDirection) {
       this.flipImageBack(movableImage);

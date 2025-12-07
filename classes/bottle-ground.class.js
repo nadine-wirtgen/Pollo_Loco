@@ -3,6 +3,12 @@ class BottleGround extends CollectableItem {
     'assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
     'assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.png'
   ];
+  offset = {
+    top: 0,
+    bottom: 0,
+    left: 25,
+    right: 10
+  };
 
   /**
    * Initializes a bottle on the ground at a random position with a random image

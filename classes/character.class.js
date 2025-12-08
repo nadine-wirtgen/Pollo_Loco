@@ -70,6 +70,8 @@ class Character extends MovableObject {
   deadAnimationStarted = false;
   lastMovement = Date.now();
   wasAboveGround = false;
+  currentJumpImage = 0;
+  lastJumpFrame = 0;
   isSnoozing = false;
   offset = {
     top: 100,
@@ -176,6 +178,8 @@ class Character extends MovableObject {
   handleLandingSound(){
     if (this.wasAboveGround && !this.isAboveGround()) {
       this.world.soundManager.playLand();
+      this.wasAboveGround = false;
+      this.currentJumpImage = 0;
     }
     this.wasAboveGround = this.isAboveGround();
   }
@@ -204,7 +208,7 @@ class Character extends MovableObject {
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.isAboveGround()){
-      this.playAnimation(this.IMAGES_JUMPING);
+      this.handleJumpAnimation();
     } else {
       this.handleIdleAnimations();
     }
@@ -216,6 +220,27 @@ class Character extends MovableObject {
   playDeathAnimation(){
     if (!this.deadAnimationFinished) {
       this.deadAnimationFinished = this.playAnimationOnce(this.IMAGES_DEAD);
+    }
+  }
+
+  /**
+   * Handles jump animation - starts from first image on new jump
+   */
+  handleJumpAnimation(){
+    // Start new jump animation
+    if(!this.wasAboveGround){
+      this.currentJumpImage = 0;
+      this.lastJumpFrame = Date.now();
+      this.wasAboveGround = true;
+    }
+
+    // Play jump animation forward with timing
+    let timeSinceLastFrame = Date.now() - this.lastJumpFrame;
+    if(timeSinceLastFrame > 100 && this.currentJumpImage < this.IMAGES_JUMPING.length){
+      let path = this.IMAGES_JUMPING[this.currentJumpImage];
+      this.img = this.imageCache[path];
+      this.currentJumpImage++;
+      this.lastJumpFrame = Date.now();
     }
   }
 

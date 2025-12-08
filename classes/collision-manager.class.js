@@ -76,20 +76,35 @@ class CollisionManager {
    */
   checkBottleCollisions(){
     this.world.throwableObjects.forEach((bottle, bottleIndex) => {
-      bottle.getReaLFrame();
-      this.world.level.enemies.forEach((enemy) => {
-        enemy.getReaLFrame();
-        if (bottle.isColliding(enemy) && !enemy.isDead()) {
-          if(enemy instanceof Boss){
-            enemy.hit(20);
-            this.world.bossBar.setPercentage(enemy.energy);
-            this.world.soundManager.playBossScream();
-          } else {
-            enemy.energy = 0;
+      // Remove bottle if splash animation is finished
+      if(bottle.splashAnimationFinished){
+        this.world.throwableObjects.splice(bottleIndex, 1);
+        return;
+      }
+
+      // Check ground collision for splash
+      if(bottle.y >= 360 && !bottle.isSplashing){
+        bottle.splash();
+        return;
+      }
+
+      // Check enemy collision for splash
+      if(!bottle.isSplashing){
+        bottle.getReaLFrame();
+        this.world.level.enemies.forEach((enemy) => {
+          enemy.getReaLFrame();
+          if (bottle.isColliding(enemy) && !enemy.isDead()) {
+            bottle.splash();
+            if(enemy instanceof Boss){
+              enemy.hit(20);
+              this.world.bossBar.setPercentage(enemy.energy);
+              this.world.soundManager.playBossScream();
+            } else {
+              enemy.energy = 0;
+            }
           }
-          this.world.throwableObjects.splice(bottleIndex, 1);
-        }
-      });
+        });
+      }
     });
   }
 

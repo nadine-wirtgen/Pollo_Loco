@@ -71,7 +71,7 @@
   border: none;
   border-radius: 8px;
   padding: 8px 15px;
-  font-size: 18px;
+  font-size: 24px;
   font-family: 'zabars', sans-serif;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.2s;
@@ -95,7 +95,7 @@
 
 .topBtn {
   padding: 6px 12px;
-  font-size: 14px;
+  font-size: 24px;
   font-family: 'zabars', sans-serif;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
@@ -110,7 +110,7 @@
 
 @media (min-width: 768px) {
   .topBtn {
-    font-size: 18px;
+    font-size: 24px;
     padding: 8px 15px;
   }
 }
@@ -122,7 +122,7 @@
 
 #startScreen button, #gameOverScreen button, #youWinScreen button {
   padding: 8px 25px;
-  font-size: 18px;
+  font-size: 24px;
   font-family: 'zabars', sans-serif;
   background-color: #ff6b00;
   color: white;
@@ -148,6 +148,9 @@
 @media (orientation: landscape) and (hover: none) {
   #startScreen #startButton {
     padding: 10px 25px;
-    font-size: 18px;
+    font-size: 24px;
+  }
+  #startScreen button {
+    font-size: 20px;
   }
 }

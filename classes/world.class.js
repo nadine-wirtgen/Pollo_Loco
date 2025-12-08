@@ -111,6 +111,7 @@ class World {
     if(this.gameOverTime === null){
       this.gameOverTime = Date.now();
       this.soundManager.playLose();
+      this.soundManager.stopSnooze();
     }
     if(Date.now() - this.gameOverTime > 1000){
       document.getElementById('gameOverScreen').style.display = 'flex';
@@ -126,6 +127,7 @@ class World {
       this.youWinTime = Date.now();
       this.gameWon = true;
       this.soundManager.playWin();
+      this.soundManager.stopSnooze();
     }
     if(Date.now() - this.youWinTime > 1000){
       document.getElementById('youWinScreen').style.display = 'flex';

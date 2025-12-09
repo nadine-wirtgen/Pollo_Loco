@@ -37,7 +37,7 @@ class ThrowableObject extends MovableObject{
    * Initiates the bottle throw with upward velocity and starts animations
    */
   throw(){
-    this.speedY = 30;
+    this.speedY = 20;
     this.applyGravity();
     this.animate();
   }

@@ -65,13 +65,13 @@ class Character extends MovableObject {
     'assets/img/2_character_pepe/1_idle/idle/I-10.png'
   ]
   currentImageIndex = 0;
+  jumpImageIndex = 0;
+  spacePressed = false;
   world;
   deadAnimationFinished = false;
   deadAnimationStarted = false;
   lastMovement = Date.now();
   wasAboveGround = false;
-  currentJumpImage = 0;
-  lastJumpFrame = 0;
   isSnoozing = false;
   offset = {
     top: 100,
@@ -132,7 +132,7 @@ class Character extends MovableObject {
    */
   animate(){
     setInterval(() => this.handleMovement(), 1000 / 60);
-    setInterval(() => this.handleAnimations(), 120);
+    setInterval(() => this.handleAnimations(), 80);
   }
 
   /**
@@ -161,10 +161,17 @@ class Character extends MovableObject {
       this.lastMovement = Date.now();
     }
 
-    if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+    if (this.world.keyboard.SPACE && !this.isAboveGround() && !this.spacePressed) {
       this.jump();
+      this.jumpImageIndex = 0;
+      this.spacePressed = true;
       this.world.soundManager.playJump();
       this.lastMovement = Date.now();
+    }
+    
+    // Reset space flag when key is released
+    if(!this.world.keyboard.SPACE){
+      this.spacePressed = false;
     }
 
     if (this.world.keyboard.D) {
@@ -178,10 +185,7 @@ class Character extends MovableObject {
   handleLandingSound(){
     if (this.wasAboveGround && !this.isAboveGround()) {
       this.world.soundManager.playLand();
-      this.wasAboveGround = false;
-      this.currentJumpImage = 0;
     }
-    this.wasAboveGround = this.isAboveGround();
   }
 
   /**
@@ -224,24 +228,13 @@ class Character extends MovableObject {
   }
 
   /**
-   * Handles jump animation - starts from first image on new jump
+   * Handles jump animation - plays through jump frames
    */
   handleJumpAnimation(){
-    // Start new jump animation
-    if(!this.wasAboveGround){
-      this.currentJumpImage = 0;
-      this.lastJumpFrame = Date.now();
-      this.wasAboveGround = true;
-    }
-
-    // Play jump animation forward with timing
-    let timeSinceLastFrame = Date.now() - this.lastJumpFrame;
-    if(timeSinceLastFrame > 100 && this.currentJumpImage < this.IMAGES_JUMPING.length){
-      let path = this.IMAGES_JUMPING[this.currentJumpImage];
-      this.img = this.imageCache[path];
-      this.currentJumpImage++;
-      this.lastJumpFrame = Date.now();
-    }
+    let i = this.jumpImageIndex % this.IMAGES_JUMPING.length;
+    let path = this.IMAGES_JUMPING[i];
+    this.img = this.imageCache[path];
+    this.jumpImageIndex++;
   }
 
   /**

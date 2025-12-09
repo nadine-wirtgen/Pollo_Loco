@@ -65,8 +65,8 @@ class Character extends MovableObject {
     'assets/img/2_character_pepe/1_idle/idle/I-10.png'
   ]
   currentImageIndex = 0;
-  jumpImageIndex = 0;
   spacePressed = false;
+  jumpAnimationInterval = null;
   world;
   deadAnimationFinished = false;
   deadAnimationStarted = false;
@@ -131,8 +131,8 @@ class Character extends MovableObject {
    * Starts the character's animation loops for movement and visual animations
    */
   animate(){
-    setInterval(() => this.handleMovement(), 1000 / 60);
-    setInterval(() => this.handleAnimations(), 80);
+    setInterval(() => this.handleMovement(), 1000 / 60); // Bewegung
+    setInterval(() => this.handleAnimations(), 120);     // Normale Animationen (Idle, Walk, Schnarchen)
   }
 
   /**
@@ -162,8 +162,10 @@ class Character extends MovableObject {
     }
 
     if (this.world.keyboard.SPACE && !this.isAboveGround() && !this.spacePressed) {
-      this.jump();
-      this.jumpImageIndex = 0;
+      this.startJumpAnimation();
+      setTimeout(() => {
+        this.jump();
+      }, 280);
       this.spacePressed = true;
       this.world.soundManager.playJump();
       this.lastMovement = Date.now();
@@ -203,6 +205,8 @@ class Character extends MovableObject {
    * Manages character animations based on current state (dead, hurt, jumping, idle, walking)
    */
   handleAnimations(){
+    if(this.jumpAnimationInterval) return; // Skip main animations while jumping
+    
     if(this.isDead()){
       this.playDeathAnimation();
     } else if (this.world.gameWon) {
@@ -211,9 +215,7 @@ class Character extends MovableObject {
       this.playAnimation(this.IMAGES_IDLE);
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
-    } else if (this.isAboveGround()){
-      this.handleJumpAnimation();
-    } else {
+    } else if (!this.isAboveGround()){
       this.handleIdleAnimations();
     }
   }
@@ -228,13 +230,26 @@ class Character extends MovableObject {
   }
 
   /**
-   * Handles jump animation - plays through jump frames
+   * Starts the jump animation with its own interval
    */
-  handleJumpAnimation(){
-    let i = this.jumpImageIndex % this.IMAGES_JUMPING.length;
-    let path = this.IMAGES_JUMPING[i];
-    this.img = this.imageCache[path];
-    this.jumpImageIndex++;
+  startJumpAnimation() {
+    if (this.jumpAnimationInterval) {
+        clearInterval(this.jumpAnimationInterval);
+        this.jumpAnimationInterval = null;
+    }
+    let jumpImageIndex = 0;
+    this.jumpAnimationInterval = setInterval(() => {
+        if(jumpImageIndex < this.IMAGES_JUMPING.length){
+            let path = this.IMAGES_JUMPING[jumpImageIndex];
+            this.img = this.imageCache[path];
+            jumpImageIndex++;
+        } else {
+            clearInterval(this.jumpAnimationInterval);
+            this.jumpAnimationInterval = null;
+            this.currentImageIndex = 0;
+            this.playAnimation(this.IMAGES_IDLE); // Nach Sprung Idle
+        }
+    }, 120); // Jump-Animation Intervall
   }
 
   /**

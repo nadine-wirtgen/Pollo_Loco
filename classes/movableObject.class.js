@@ -2,7 +2,7 @@ class MovableObject extends DrawableObject{
   speed = 0.15;
   otherDirection = false;
   speedY = 0;
-  acceleration = 2.0;
+  acceleration = 1.0;
   offset = { top: 0, bottom: 0, left: 0, right: 0 };
   energy = 100;
   lastHit = 0;
@@ -16,7 +16,7 @@ class MovableObject extends DrawableObject{
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       }
-    }, 1000 / 60);
+    }, 1000 / 40);
   }
 
   /**
@@ -126,6 +126,6 @@ class MovableObject extends DrawableObject{
    * Makes the object jump by setting upward vertical speed
    */
   jump(){
-    this.speedY = 24;
+    this.speedY = 17;
   }
 }
